@@ -20,4 +20,6 @@
         controller_host: "{{ controller_host }}"
         controller_username: admin
         controller_password: "{{ _controller_password_ }}"
+        become_enabled: yes
+        limit: "{{ hostname_limited }}"
         validate_certs: false
