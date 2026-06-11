@@ -1,0 +1,21 @@
+---
+- name: Create a project
+  hosts: localhost
+  vars_files:
+    - myvars
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Create myinv
+      ansible.controller.inventory_source:
+        name: "{{ inventory_source_name }}"
+        inventory: "{{ inventory_name }}"
+        source: scm
+        source_project: "{{ project_name }}"
+        source_path: inventory.ini
+        overwrite: true
+        update_on_launch: true
+        organization: Default
+        controller_host: "{{ controller_host }}"
+        controller_username: admin
+        controller_password: "{{ _controller_password_ }}"
