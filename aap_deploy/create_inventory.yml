@@ -1,0 +1,15 @@
+---
+- name: Create a project
+  hosts: localhost
+  vars_files:
+    - myvars
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Create the Test Project
+      ansible.controller.inventory:
+        name: "{{ inventory_name }}"
+        organization: Default
+        controller_host: "{{ controller_host }}"
+        controller_username: admin
+        controller_password: "{{ _controller_password_ }}"
