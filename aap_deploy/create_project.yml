@@ -1,15 +1,17 @@
 ---
 - name: Create a project
   hosts: localhost
+  vars_files:
+    - myvars
   connection: local
   gather_facts: false
   tasks:
     - name: Create the Test Project
-      aap_project:
+      ansible.controller.project:
         name: "{{ project_name }}"
         scm_type: git
         scm_url: "{{ git_url }}"
-        scm_branch: master
+        scm_branch: main
         scm_clean: true
         organization: Default
         wait: true
