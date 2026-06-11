@@ -6,14 +6,14 @@
   tasks:
     - name: Create the Test Project
       aap_project:
-        name: {{ project_name }}
+        name: "{{ project_name }}"
         scm_type: git
-        scm_url: {{ git_url }}
+        scm_url: "{{ git_url }}"
         scm_branch: master
         scm_clean: true
         organization: Default
         wait: true
-        controller_host: {{ controller_host }}
+        controller_host: "{{ controller_host }}"
         controller_username: admin
         controller_password: "{{ _controller_password_ }}"
         validate_certs: false
