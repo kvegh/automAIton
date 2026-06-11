@@ -6,15 +6,14 @@
   tasks:
     - name: Create the Test Project
       aap_project:
-        name: Test Project
+        name: {{ project_name }}
         scm_type: git
-        scm_url: https://github.com/ansible/test-playbooks.git
+        scm_url: {{ git_url }}
         scm_branch: master
         scm_clean: true
-        description: Test Project 1
         organization: Default
         wait: true
-        controller_host: https://controller.node
+        controller_host: {{ controller_host }}
         controller_username: admin
         controller_password: "{{ _controller_password_ }}"
         validate_certs: false
