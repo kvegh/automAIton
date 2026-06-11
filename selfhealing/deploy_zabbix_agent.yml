@@ -1,0 +1,17 @@
+---
+- name: Install and configure zabbix agent
+  hosts: all
+  tasks:
+    - name: Install zabbix agent
+      ansible.builtin.package:
+        name: http://repo.zabbix.com/zabbix/3.2/rhel/7/x86_64/zabbix-agent-3.2.4-1.el7.x86_64.rpm
+        state: present
+    - name: Configure zabbix agent
+      ansible.builtin.template:
+        src: zabbix_agentd.conf.j2
+        dest: /etc/zabbix/zabbix_agentd.conf
+  handlers:
+    - name: restart zabbix-agent
+      ansible.builtin.service:
+        name: zabbix-agent
+        state: restarted
