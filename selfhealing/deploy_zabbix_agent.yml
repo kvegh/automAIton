@@ -7,7 +7,7 @@
       ansible.builtin.get_url:
         url: https://repo.zabbix.com/zabbix-official-repo.key
         dest: /home/ansible/
-        mode: '0440'
+        mode: '0640'
 
     - name: import key
       ansible.builtin.rpm_key:
