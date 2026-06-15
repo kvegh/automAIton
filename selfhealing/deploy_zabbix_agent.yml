@@ -13,6 +13,7 @@
       ansible.builtin.rpm_key:
         state: present
         key: /home/ansible/zabbix-official-repo.key
+      ignore_errors: true
       
     - name: Install zabbix agent
       ansible.builtin.package:
