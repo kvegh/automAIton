@@ -3,7 +3,7 @@
   hosts: all
   tasks:
   
-    - name: download Zabbix repo
+    - name: download Zabbix repo key
       ansible.builtin.get_url:
         url: https://repo.zabbix.com/zabbix-official-repo.key
         dest: /home/ansible/
@@ -17,6 +17,7 @@
     - name: Install zabbix agent
       ansible.builtin.package:
         name: https://repo.zabbix.com/zabbix/7.4/release/rhel/9/noarch/zabbix-release-latest.el9.noarch.rpm
+	state: present
   
     - name: Configure zabbix agent
       ansible.builtin.template:
