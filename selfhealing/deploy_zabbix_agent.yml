@@ -5,14 +5,14 @@
   
     - name: download Zabbix repo
       ansible.builtin.get_url:
-        url: https://repo.zabbix.com/RPM-GPG-KEY-ZABBIX
+        url: https://repo.zabbix.com/zabbix-official-repo.key
         dest: /home/ansible/
         mode: '0440'
 
     - name: import key
       ansible.builtin.rpm_key:
         state: present
-        key: /home/ansible/RPM-GPG-KEY-ZABBIX
+        key: /home/ansible/zabbix-official-repo.key
       
     - name: Install zabbix agent
       ansible.builtin.package:
