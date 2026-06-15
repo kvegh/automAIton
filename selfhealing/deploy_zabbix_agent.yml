@@ -3,10 +3,17 @@
   hosts: all
   tasks:
   
-    - name: Install zabbix GPG key
-      ansible.builtin.package:
-        name: https://repo.zabbix.com/zabbix/7.0/rhel/9/x86_64/zabbix-release-latest.el9.noarch.rpm
-  
+    - name: download Zabbix repo
+      ansible.builtin.get_url:
+        url: https://repo.zabbix.com/RPM-GPG-KEY-ZABBIX
+        dest: /home/ansible/
+        mode: '0440'
+
+    - name: import key
+      ansible.builtin.rpm_key:
+        state: present
+        key: /home/ansible/RPM-GPG-KEY-ZABBIX
+      
     - name: Install zabbix agent
       ansible.builtin.package:
         name: https://repo.zabbix.com/zabbix/7.4/release/rhel/9/noarch/zabbix-release-latest.el9.noarch.rpm
