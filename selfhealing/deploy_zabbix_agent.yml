@@ -37,7 +37,7 @@
       ansible.builtin.lineinfile: 
         path: /etc/zabbix/zabbix_agent2.conf
         regex: ^Server=127.0.0.1
-        line: "Server={{ zabbix_server }}"
+        line: Server={{ zabbix_server }}
       notify: restart zabbix-agent
     
   handlers:
