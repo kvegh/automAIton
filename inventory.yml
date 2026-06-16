@@ -1,0 +1,22 @@
+all:
+  children:
+    monitoring:
+      hosts:
+        zabbix:
+          ansible_host: 192.168.122.107
+          ansible_connection: httpapi
+          ansible_network_os: zabbix.zabbix.zabbix
+          ansible_httpapi_use_ssl: false
+          ansible_httpapi_validate_certs: false
+    admin:
+      hosts:
+        tra:
+          ansible_host: 192.168.122.235
+    servers:
+      hosts:
+        testserver:
+          ansible_host: 192.168.122.136
+    automation:
+      hosts:
+        aap:
+          ansible_host: 192.168.122.135
