@@ -42,4 +42,5 @@
     - name: restart zabbix-agent
       ansible.builtin.service:
         name: zabbix-agent
+        enabled: yes
         state: restarted
