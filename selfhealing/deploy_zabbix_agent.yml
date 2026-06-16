@@ -17,9 +17,14 @@
         key: /home/ansible/zabbix-official-repo.key
       ignore_errors: true
       
-    - name: Install zabbix agent
+    - name: Install zabbix repo
       ansible.builtin.package:
         name: https://repo.zabbix.com/zabbix/7.4/release/rhel/9/noarch/zabbix-release-latest.el9.noarch.rpm
+        state: present
+      
+    - name: Install zabbix2 agent package
+      ansible.builtin.package:
+        name: zabbix-agent2
         state: present
  
     - name: add zabbix dir (why isn't this created by the rpm?) 
