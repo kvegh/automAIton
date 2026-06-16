@@ -28,10 +28,10 @@
         state: present
  
     - name: Configure zabbix agent
-      ansible.builtin.template:
-        src: zabbix_agentd.conf.j2
-        dest: /etc/zabbix/zabbix_agentd.conf
-      notify: restart zabbix-agent
+      ansible.builtin.lineinfile: 
+      path: /etc/zabbix/zabix_agentd2.conf
+      regex: ^Server=127.0.0.1
+      line: Server="{{ zabbix_server }}"
     
     - name: restart zabbix-agent
       ansible.builtin.service:
