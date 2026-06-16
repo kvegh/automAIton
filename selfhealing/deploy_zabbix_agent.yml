@@ -29,9 +29,9 @@
  
     - name: Configure zabbix agent
       ansible.builtin.lineinfile: 
-      path: /etc/zabbix/zabix_agentd2.conf
-      regex: ^Server=127.0.0.1
-      line: Server="{{ zabbix_server }}"
+        path: /etc/zabbix/zabix_agentd2.conf
+        regex: ^Server=127.0.0.1
+        line: Server="{{ zabbix_server }}"
     
     - name: restart zabbix-agent
       ansible.builtin.service:
