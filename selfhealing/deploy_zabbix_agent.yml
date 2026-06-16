@@ -27,12 +27,6 @@
         name: zabbix-agent2
         state: present
  
-    - name: add zabbix dir (why isn't this created by the rpm?) 
-      ansible.builtin.file:
-        path: /etc/zabbix
-        state: directory
-        mode: 0660
-  
     - name: Configure zabbix agent
       ansible.builtin.template:
         src: zabbix_agentd.conf.j2
