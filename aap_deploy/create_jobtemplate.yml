@@ -15,7 +15,8 @@
         playbook: "{{ playbook_path }}"
         inventory: "{{ inventory_name }}"
         credentials:
-          - "{{ credential_name }}"
+          - "{{ credential_machine_name }}"
+          - "{{ credential_vault_name }}"
         state: present
         controller_host: "{{ controller_host }}"
         controller_username: admin
