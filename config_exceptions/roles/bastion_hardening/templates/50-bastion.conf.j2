@@ -1,0 +1,5 @@
+# {{ ansible_managed }}
+# Bastion SSH policy — managed by role bastion_hardening.
+AllowGroups {{ bastion_hardening_allowed_groups | join(' ') }}
+PermitRootLogin no
+MaxSessions 4

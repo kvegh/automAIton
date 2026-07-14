@@ -1,0 +1,9 @@
+# server2 is a bastion: behavior difference lives in the bastion_hardening
+# role (selected via group membership in hosts.yml), parameters live here.
+bastion_hardening_allowed_groups:
+  - ops
+  - oncall
+additional_users:
+  - name: additional_user
+    groups: ops
+    shell: /bin/bash

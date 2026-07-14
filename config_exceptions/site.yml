@@ -1,0 +1,10 @@
+---
+- name: Baseline for all hosts
+  hosts: rhel9
+  roles:
+    - common
+
+- name: Bastion-specific behavior
+  hosts: bastion_hosts
+  roles:
+    - bastion_hardening

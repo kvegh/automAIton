@@ -1,0 +1,4 @@
+---
+# Safe fallback; override per host/group in the inventory.
+bastion_hardening_allowed_groups:
+  - wheel

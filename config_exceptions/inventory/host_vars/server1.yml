@@ -1,0 +1,5 @@
+# Everything that makes server1 special, in one file.
+# Pinned: app vendor certifies only this sshd build (review pin quarterly).
+openssh_packages:
+  - openssh-server-8.7p1-47.el9_7
+  - openssh-clients-8.7p1-47.el9_7

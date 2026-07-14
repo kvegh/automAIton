@@ -1,0 +1,16 @@
+---
+- name: Ensure OpenSSH packages
+  ansible.builtin.dnf:
+    name: "{{ openssh_packages }}"
+    state: present
+    allow_downgrade: true
+  tags: [openssh]
+
+- name: Ensure additional users
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    groups: "{{ item.groups | default(omit) }}"
+    shell: "{{ item.shell | default('/bin/bash') }}"
+    state: present
+  loop: "{{ additional_users | default([]) }}"
+  tags: [users]
