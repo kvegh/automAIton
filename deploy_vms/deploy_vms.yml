@@ -1,0 +1,53 @@
+---
+- name: Deploy KVM virtual machines
+  hosts: hypervisor
+  become: true
+  vars:
+    base_image: /opt/images/rhel-9.8-x86_64-kvm.qcow2
+    vm_dir: /opt/vms
+    vm_ids: "{{ range(1, sequence | int + 1) | list }}"
+
+  tasks:
+    - name: Ensure VM directory exists
+      ansible.builtin.file:
+        path: "{{ vm_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Copy base image for each VM
+      ansible.builtin.copy:
+        src: "{{ base_image }}"
+        dest: "{{ vm_dir }}/{{ projectname }}-vm-{{ item }}.disk.qcow2"
+        remote_src: true
+      loop: "{{ vm_ids }}"
+
+    - name: Customize VM images
+      ansible.builtin.command:
+        cmd: >-
+          virt-customize -a {{ vm_dir }}/{{ projectname }}-vm-{{ item }}.disk.qcow2
+          --hostname {{ projectname }}-vm-{{ item }}.internal
+          --root-password password:blah
+          --ssh-inject root:file:/home/kvegh/.ssh/id_ed25519.pub
+          --run-command 'useradd ansible'
+          --password ansible:password:ansible
+          --write '/etc/sudoers.d/ansible:ansible ALL=(ALL) NOPASSWD: ALL'
+          --chmod 0440:/etc/sudoers.d/ansible
+          --run-command 'touch /etc/cloud/cloud-init.disabled'
+          --uninstall cloud-init
+          --selinux-relabel
+      loop: "{{ vm_ids }}"
+
+    - name: Import and start VMs
+      community.libvirt.virt_install:
+        name: "{{ projectname }}-vm-{{ item }}"
+        vcpus: 2
+        memory: 4096
+        import_install: true
+        graphics: none
+        osinfo: rhel9.8
+        disks:
+          - path: "{{ vm_dir }}/{{ projectname }}-vm-{{ item }}.disk.qcow2"
+            format: qcow2
+        networks:
+          - network: internal
+      loop: "{{ vm_ids }}"
