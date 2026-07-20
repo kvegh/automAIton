@@ -13,6 +13,9 @@ as inventory data — never as host-specific playbooks or conditionals in code.
 | appservers | function | server4, server8 | group_vars | firewalld ports 8080/tcp, 8443/tcp |
 | db_servers | function | server1, server5 | group_vars | sysctl tuning, THP off, mount options |
 | webservers | function | server3, server7 | group_vars | firewalld ports 80/tcp, 443/tcp |
+| dev | lifecycle | server8 | group_vars | Sat. Dev Content View + Activation Key |
+| test | lifecycle | server4 | group_vars | Sat. Test Content View + Activation Key |
+| prod | lifecycle | server1,2,3,5,6,7 | group_vars | Sat. Prod Content View + Activation Key |
 
 ## How it works
 

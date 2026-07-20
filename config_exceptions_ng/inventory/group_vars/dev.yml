@@ -1,0 +1,4 @@
+---
+satellite_content_view: "RHEL9_Dev"
+satellite_activation_key: "ak-rhel9-dev"
+satellite_lifecycle_env: "Development"

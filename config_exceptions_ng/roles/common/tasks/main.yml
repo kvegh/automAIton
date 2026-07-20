@@ -28,6 +28,14 @@
   loop: "{{ mount_options | default([]) }}"
   tags: [mounts]
 
+- name: Register with Satellite activation key
+  community.general.redhat_subscription:
+    activationkey: "{{ satellite_activation_key }}"
+    org_id: "{{ satellite_org_id | default('Example_Org') }}"
+    state: present
+  when: satellite_activation_key is defined
+  tags: [satellite]
+
 - name: Open firewalld ports
   ansible.posix.firewalld:
     port: "{{ item }}"
