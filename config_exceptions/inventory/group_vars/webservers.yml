@@ -1,0 +1,4 @@
+# Firewalld port list for web-facing hosts.
+firewalld_ports:
+  - 80/tcp
+  - 443/tcp

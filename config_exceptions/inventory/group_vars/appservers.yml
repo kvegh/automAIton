@@ -1,0 +1,4 @@
+# Firewalld port list for application servers.
+firewalld_ports:
+  - 8080/tcp
+  - 8443/tcp

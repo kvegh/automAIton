@@ -8,3 +8,13 @@
   hosts: bastion_hosts
   roles:
     - bastion_hardening
+
+- name: PCI log-forwarding compliance
+  hosts: pci_scope
+  roles:
+    - pci_logging
+
+- name: SAP system prerequisites
+  hosts: sap
+  roles:
+    - sap_preconfigure

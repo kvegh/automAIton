@@ -14,3 +14,94 @@
     state: present
   loop: "{{ additional_users | default([]) }}"
   tags: [users]
+
+# --- UC1: Kernel tuning (sysctl) ---
+- name: Apply sysctl settings
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_set: true
+    reload: true
+  loop: "{{ sysctl_settings | default({}) | dict2items }}"
+  tags: [sysctl]
+
+- name: Disable Transparent Huge Pages
+  ansible.builtin.copy:
+    dest: /etc/tmpfiles.d/thp.conf
+    content: "w /sys/kernel/mm/transparent_hugepage/enabled - - - - never\n"
+    owner: root
+    group: root
+    mode: "0644"
+  when: thp_enabled is defined and not thp_enabled
+  tags: [sysctl]
+
+# --- UC2: Proxy configuration (DMZ hosts) ---
+- name: Deploy proxy environment variables
+  ansible.builtin.template:
+    src: proxy.sh.j2
+    dest: /etc/profile.d/proxy.sh
+    owner: root
+    group: root
+    mode: "0644"
+  when: proxy_url is defined
+  tags: [proxy]
+
+- name: Configure dnf proxy
+  community.general.ini_file:
+    path: /etc/dnf/dnf.conf
+    section: main
+    option: proxy
+    value: "{{ proxy_url }}"
+    mode: "0644"
+  when: proxy_url is defined
+  tags: [proxy]
+
+- name: Configure RHSM proxy
+  community.general.ini_file:
+    path: /etc/rhsm/rhsm.conf
+    section: server
+    option: proxy_hostname
+    value: "{{ proxy_url | urlsplit('hostname') }}"
+    mode: "0644"
+  when: proxy_url is defined
+  tags: [proxy]
+
+- name: Configure RHSM proxy port
+  community.general.ini_file:
+    path: /etc/rhsm/rhsm.conf
+    section: server
+    option: proxy_port
+    value: "{{ proxy_url | urlsplit('port') }}"
+    mode: "0644"
+  when: proxy_url is defined
+  tags: [proxy]
+
+# --- UC3: Satellite content view / activation key ---
+- name: Register with Satellite activation key
+  community.general.redhat_subscription:
+    activationkey: "{{ satellite_activation_key }}"
+    org_id: "{{ satellite_org_id | default('Example_Org') }}"
+    state: present
+  when: satellite_activation_key is defined
+  tags: [satellite]
+
+# --- UC4: Mount options (db_servers) ---
+- name: Configure mount options
+  ansible.posix.mount:
+    src: "{{ item.device }}"
+    path: "{{ item.path }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.opts }}"
+    state: mounted
+  loop: "{{ mount_options | default([]) }}"
+  tags: [mounts]
+
+# --- UC6: Firewalld ports per application group ---
+- name: Open firewalld ports
+  ansible.posix.firewalld:
+    port: "{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  loop: "{{ firewalld_ports | default([]) }}"
+  tags: [firewall]

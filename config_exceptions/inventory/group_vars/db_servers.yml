@@ -1,0 +1,14 @@
+# UC1 + UC4: sysctl tuning and mount options cluster on the same group.
+# When multiple hosts share the same exceptions, promote to a group —
+# not repeated host_vars.
+sysctl_settings:
+  vm.swappiness: 10
+  vm.nr_hugepages: 1024
+
+thp_enabled: false
+
+mount_options:
+  - device: /dev/sdb1
+    path: /var/lib/pgsql
+    fstype: xfs
+    opts: noatime,nodiratime

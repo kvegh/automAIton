@@ -1,0 +1,4 @@
+# Proxy settings for hosts behind the DMZ proxy.
+# Applied by common role tasks (env, dnf, rhsm).
+proxy_url: "http://proxy.dmz.example.com:3128"
+proxy_no_proxy: "localhost,127.0.0.1,.example.com"

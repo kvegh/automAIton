@@ -1,0 +1,4 @@
+---
+sap_preconfigure_sysctl:
+  vm.max_map_count: 2147483647
+  kernel.sem: "1250 256000 100 8192"

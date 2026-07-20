@@ -1,0 +1,7 @@
+# {{ ansible_managed }}
+export http_proxy="{{ proxy_url }}"
+export https_proxy="{{ proxy_url }}"
+export no_proxy="{{ proxy_no_proxy | default('localhost,127.0.0.1') }}"
+export HTTP_PROXY="{{ proxy_url }}"
+export HTTPS_PROXY="{{ proxy_url }}"
+export NO_PROXY="{{ proxy_no_proxy | default('localhost,127.0.0.1') }}"

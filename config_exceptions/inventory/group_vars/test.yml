@@ -1,0 +1,4 @@
+# Satellite registration: Test lifecycle
+satellite_content_view: "RHEL9_Test"
+satellite_activation_key: "ak-rhel9-test"
+satellite_lifecycle_env: "Test"

@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+# PCI DSS — forward auth and audit logs to central SIEM.
+auth,authpriv.*    {{ pci_logging_syslog_target }}
+local6.*           {{ pci_logging_syslog_target }}

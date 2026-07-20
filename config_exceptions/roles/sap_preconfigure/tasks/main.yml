@@ -1,0 +1,36 @@
+---
+- name: Install SAP prerequisite packages
+  ansible.builtin.dnf:
+    name:
+      - compat-openssl11
+      - libnsl
+      - uuidd
+      - nfs-utils
+      - tcsh
+    state: present
+  tags: [sap]
+
+- name: Apply SAP kernel tuning
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_set: true
+    reload: true
+  loop: "{{ sap_preconfigure_sysctl | dict2items }}"
+  tags: [sap]
+
+- name: Create SAP tmpfiles configuration
+  ansible.builtin.copy:
+    dest: /etc/tmpfiles.d/sap.conf
+    content: "d /usr/sap 0755 root sapsys -\n"
+    owner: root
+    group: root
+    mode: "0644"
+  tags: [sap]
+
+- name: Ensure uuidd is running
+  ansible.builtin.service:
+    name: uuidd
+    state: started
+    enabled: true
+  tags: [sap]
