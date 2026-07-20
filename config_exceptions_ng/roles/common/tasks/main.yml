@@ -1,1 +1,9 @@
 ---
+- name: Open firewalld ports
+  ansible.posix.firewalld:
+    port: "{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  loop: "{{ firewalld_ports | default([]) }}"
+  tags: [firewall]
