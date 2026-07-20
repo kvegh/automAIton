@@ -1,0 +1,26 @@
+---
+- name: Install session recording and audit tooling
+  ansible.builtin.dnf:
+    name:
+      - tlog
+      - audit
+    state: present
+  tags: [bastion]
+
+- name: Enable session recording for interactive logins
+  ansible.builtin.lineinfile:
+    path: /etc/tlog/tlog-rec-session.conf
+    regexp: '^"shell"'
+    line: '"shell": "/bin/bash",'
+  tags: [bastion]
+
+- name: Deploy bastion SSH policy as drop-in
+  ansible.builtin.template:
+    src: 50-bastion.conf.j2
+    dest: /etc/ssh/sshd_config.d/50-bastion.conf
+    owner: root
+    group: root
+    mode: "0600"
+    validate: sshd -t -f %s
+  notify: Restart sshd
+  tags: [bastion]

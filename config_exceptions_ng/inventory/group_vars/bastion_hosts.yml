@@ -1,0 +1,4 @@
+---
+bastion_hardening_allowed_groups:
+  - ops
+  - oncall

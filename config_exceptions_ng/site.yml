@@ -3,3 +3,8 @@
   hosts: rhel9
   roles:
     - common
+
+- name: Bastion-specific hardening
+  hosts: bastion_hosts
+  roles:
+    - bastion_hardening
