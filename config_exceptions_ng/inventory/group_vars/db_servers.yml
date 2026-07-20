@@ -1,0 +1,12 @@
+---
+sysctl_settings:
+  vm.swappiness: 10
+  vm.nr_hugepages: 1024
+
+thp_enabled: false
+
+mount_options:
+  - device: /dev/sdb1
+    path: /var/lib/pgsql
+    fstype: xfs
+    opts: noatime,nodiratime
