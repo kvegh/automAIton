@@ -1,2 +1,4 @@
 ---
-# Global defaults
+openssh_packages:
+  - openssh-server
+  - openssh-clients

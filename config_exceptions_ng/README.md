@@ -18,6 +18,9 @@ as inventory data — never as host-specific playbooks or conditionals in code.
 | prod | lifecycle | server1,2,3,5,6,7 | group_vars | Sat. Prod Content View + Activation Key |
 | dmz | network | server2, server3, server7 | group_vars | proxy config (env + dnf + rhsm) |
 | pci_scope | compliance | server6, server7 | group_vars + extra role | PCI log forwarding (rsyslog + retention) |
+| openssh pin | host | server1 | host_vars | pinned OpenSSH 8.7p1-47.el9_7 |
+| additional users | host | server2 | host_vars | additional_user in ops group |
+| SAP prerequisites | host | server6 | host_vars + extra role | SAP packages, kernel tuning, tmpfiles |
 
 ## How it works
 
