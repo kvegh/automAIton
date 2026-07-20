@@ -8,3 +8,8 @@
   hosts: bastion_hosts
   roles:
     - bastion_hardening
+
+- name: PCI log-forwarding compliance
+  hosts: pci_scope
+  roles:
+    - pci_logging

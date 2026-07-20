@@ -1,0 +1,23 @@
+---
+- name: Ensure rsyslog is installed
+  ansible.builtin.dnf:
+    name: rsyslog
+    state: present
+  tags: [pci]
+
+- name: Deploy PCI log-forwarding configuration
+  ansible.builtin.template:
+    src: 60-pci-forwarding.conf.j2
+    dest: /etc/rsyslog.d/60-pci-forwarding.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart rsyslog
+  tags: [pci]
+
+- name: Set audit log retention
+  ansible.builtin.lineinfile:
+    path: /etc/logrotate.d/syslog
+    regexp: "^\\s*rotate "
+    line: "    rotate {{ (pci_logging_retention_days / 7) | int }}"
+  tags: [pci]

@@ -16,6 +16,8 @@ as inventory data — never as host-specific playbooks or conditionals in code.
 | dev | lifecycle | server8 | group_vars | Sat. Dev Content View + Activation Key |
 | test | lifecycle | server4 | group_vars | Sat. Test Content View + Activation Key |
 | prod | lifecycle | server1,2,3,5,6,7 | group_vars | Sat. Prod Content View + Activation Key |
+| dmz | network | server2, server3, server7 | group_vars | proxy config (env + dnf + rhsm) |
+| pci_scope | compliance | server6, server7 | group_vars + extra role | PCI log forwarding (rsyslog + retention) |
 
 ## How it works
 
