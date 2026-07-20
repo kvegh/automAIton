@@ -12,6 +12,7 @@ as inventory data — never as host-specific playbooks or conditionals in code.
 | base server config | baseline | all | common role | baseline for all RHEL servers |
 | appservers | function | server4, server8 | group_vars | firewalld ports 8080/tcp, 8443/tcp |
 | db_servers | function | server1, server5 | group_vars | sysctl tuning, THP off, mount options |
+| webservers | function | server3, server7 | group_vars | firewalld ports 80/tcp, 443/tcp |
 
 ## Rules
 
