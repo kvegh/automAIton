@@ -1,47 +1,38 @@
 ---
-- name: Install and configure zabbix agent
+- name: Install and configure Zabbix agent
   hosts: all
-  vars_files: 
+  vars_files:
+    # Create your own 'myvars' vault file with: ansible-vault create myvars
+    # See myvars.example for required variables.
     - myvars
-  tasks:
-  
-    - name: download Zabbix repo key
-      ansible.builtin.get_url:
-        url: https://repo.zabbix.com/zabbix-official-repo.key
-        dest: /home/ansible/
-        mode: '0640'
 
-    - name: import key
-      ansible.builtin.rpm_key:
-        state: present
-        key: /home/ansible/zabbix-official-repo.key
-      ignore_errors: true
-      
-    - name: Install zabbix repo
-      ansible.builtin.package:
+  tasks:
+    - name: Install Zabbix repo
+      ansible.builtin.dnf:
         name: https://repo.zabbix.com/zabbix/7.4/release/rhel/9/noarch/zabbix-release-latest.el9.noarch.rpm
         state: present
-      
-    - name: Install zabbix2 agent package
-      ansible.builtin.package:
+        disable_gpg_check: true
+
+    - name: Install zabbix-agent2
+      ansible.builtin.dnf:
         name: zabbix-agent2
         state: present
-    
-    - name: restart zabbix-agent
+
+    - name: Configure Zabbix server address
+      ansible.builtin.lineinfile:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regex: ^Server=
+        line: "Server={{ zabbix_server }}"
+      notify: restart zabbix-agent2
+
+    - name: Enable and start zabbix-agent2
       ansible.builtin.service:
         name: zabbix-agent2
-        enabled: yes
-        state: restarted
- 
-    - name: Configure zabbix agent
-      ansible.builtin.lineinfile: 
-        path: /etc/zabbix/zabbix_agent2.conf
-        regex: ^Server=127.0.0.1
-        line: Server={{ zabbix_server }}
-      notify: restart zabbix-agent
-    
+        enabled: true
+        state: started
+
   handlers:
-    - name: restart zabbix-agent
+    - name: restart zabbix-agent2
       ansible.builtin.service:
         name: zabbix-agent2
         state: restarted
