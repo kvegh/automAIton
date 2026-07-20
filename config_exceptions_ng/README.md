@@ -1,5 +1,13 @@
 # Inventory-Driven Exception Handling
 
+This is **Configuration as Code (CaC)**. The complete configuration of
+every server is defined as files in this git repository. Git is the
+single source of truth — if you want to know how a server is configured,
+you look here, not on the server.
+
+Changes go through merge requests, are reviewed, and leave a full audit
+trail in git history. No undocumented changes, no configuration drift.
+
 **Principle: exceptions are data in git.**
 
 All hosts run the same code. Anything host- or group-specific is expressed
