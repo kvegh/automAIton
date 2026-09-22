@@ -1,4 +1,0 @@
-# Genuine global defaults only. No empty placeholder lists.
-openssh_packages:
-  - openssh-server
-  - openssh-clients

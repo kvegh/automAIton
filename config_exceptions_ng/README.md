@@ -136,6 +136,12 @@ Look at three things:
 - **Different value, single host** → add a `host_vars/<host>.yml` file.
 - **Different behavior** → create a role, add the group to the inventory,
   add a play to `site.yml`.
+- **Two or more hosts with the same `host_vars`** → that is a group. Create
+  it, move the values to `group_vars`, delete the `host_vars` files.
+  `db_servers` (server1, server5) is the example: shared sysctl and mount
+  options live in one `group_vars` file, not in two identical `host_vars`.
+- **No exception → no file.** server3 and server7 have no `host_vars` at
+  all; their entire configuration comes from group membership.
 
 ## Testing a new component version
 
@@ -180,6 +186,26 @@ The settings that make this enforced, and the matching rules, are in the
 header of `CODEOWNERS`. This is GitLab syntax — GitHub reads the same
 file name but not the `[Section]` syntax.
 
+## Converting an existing branch
+
+A long-lived feature branch becomes inventory data in three steps:
+
+1. Diff the branch against `main`.
+2. Classify every difference: different value → `group_vars`;
+   different behavior → role; no longer needed → delete.
+3. Close the branch.
+
+The third category is real. Example, found in a branch last touched in
+2021 and serving an integration that had since been decommissioned:
+
+```yaml
+ssl_ciphers: "DES-CBC3-SHA:RC4"
+ssl_min_protocol: "TLSv1"
+```
+
+Nothing was migrated and no group was created; the branch was closed.
+Converting a branch is also the moment to remove what no longer belongs.
+
 ## Build history
 
 Each feature was added in a separate commit. You can compare any two
@@ -202,6 +228,7 @@ tags on GitHub to see exactly what changed:
 | `v12-component-test` | sshd-ng test group, one host per stage | [v11...v12](https://github.com/kvegh/automAIton/compare/v11-cac-intro...v12-component-test) |
 | `v13-promote` | sshd-ng promoted to all.yml, test group dissolved | [v12...v13](https://github.com/kvegh/automAIton/compare/v12-component-test...v13-promote) |
 | `v14-codeowners` | CODEOWNERS: path-level approval on one main | [v13...v14](https://github.com/kvegh/automAIton/compare/v13-promote...v14-codeowners) |
+| `v15-consolidate` | README: branch conversion, group + footprint rules; old `config_exceptions` removed | [v14...v15](https://github.com/kvegh/automAIton/compare/v14-codeowners...v15-consolidate) |
 
 ## Run
 
