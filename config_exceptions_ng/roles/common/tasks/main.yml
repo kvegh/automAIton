@@ -6,6 +6,18 @@
     allow_downgrade: true
   tags: [openssh]
 
+- name: Deploy sshd settings as drop-in
+  ansible.builtin.template:
+    src: 40-sshd.conf.j2
+    dest: /etc/ssh/sshd_config.d/40-sshd.conf
+    owner: root
+    group: root
+    mode: "0600"
+    validate: sshd -t -f %s
+  when: sshd_settings is defined
+  notify: Restart sshd
+  tags: [openssh]
+
 - name: Ensure additional users
   ansible.builtin.user:
     name: "{{ item.name }}"

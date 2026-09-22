@@ -30,6 +30,7 @@ inventory/
 │   ├── dmz.yml                 # proxy settings
 │   ├── pci_scope.yml           # PCI syslog target + retention
 │   ├── prod.yml                # Satellite Prod content view
+│   ├── sshd_ng_test.yml        # sshd-ng component test (temporary)
 │   ├── test.yml                # Satellite Test content view
 │   └── webservers.yml          # firewalld ports 80, 443
 ├── host_vars/
@@ -62,6 +63,7 @@ test                (server4)
 prod                (server1, server2, server3, server5, server6, server7)
 dmz                 (server2, server3, server7)
 pci_scope           (server6, server7)
+sshd_ng_test        (server8, server4, server5)   # temporary
 ```
 
 ## Exception use cases
@@ -80,6 +82,7 @@ pci_scope           (server6, server7)
 | openssh pin | host | server1 | host_vars | pinned OpenSSH 8.7p1-47.el9_7 |
 | additional users | host | server2 | host_vars | additional_user in ops group |
 | SAP prerequisites | host | server6 | host_vars + extra role | SAP packages, kernel tuning, tmpfiles |
+| sshd-ng test | component test | server8, server4, server5 | group_vars (temporary) | OpenSSH 8.7p1-52 + sshd settings, one host per stage |
 
 ## How it works
 
@@ -136,6 +139,31 @@ Look at three things:
 - **Different behavior** → create a role, add the group to the inventory,
   add a play to `site.yml`.
 
+## Testing a new component version
+
+A new version of a component (here: sshd-ng) is tested on a few hosts
+before it becomes the baseline. No branch, no separate inventory.
+
+**Test:**
+
+1. Create a group `sshd_ng_test` in `hosts.yml` with one host per stage
+   (dev, test, prod).
+2. Put the new version and its settings in `group_vars/sshd_ng_test.yml`.
+3. Run `site.yml` — or just `--limit sshd_ng_test`.
+
+The test hosts stay in all their other groups. They keep receiving every
+baseline change during the test. Everything else in the inventory is
+untouched.
+
+**Promote:**
+
+1. Move the values from `group_vars/sshd_ng_test.yml` into `all.yml`.
+2. Delete `group_vars/sshd_ng_test.yml` and the group in `hosts.yml`.
+
+The inventory is back to where it started, and the new version is the
+baseline for all hosts. Host-level exceptions (like the pin on server1)
+are unaffected — `host_vars` still wins.
+
 ## Build history
 
 Each feature was added in a separate commit. You can compare any two
@@ -153,6 +181,9 @@ tags on GitHub to see exactly what changed:
 | `v7-lifecycle` | dev/test/prod satellite registration | [v6...v7](https://github.com/kvegh/automAIton/compare/v6-readme-layers...v7-lifecycle) |
 | `v8-network-compliance` | DMZ proxy + PCI log forwarding | [v7...v8](https://github.com/kvegh/automAIton/compare/v7-lifecycle...v8-network-compliance) |
 | `v9-sniper` | host-level: openssh pin, users, SAP | [v8...v9](https://github.com/kvegh/automAIton/compare/v8-network-compliance...v9-sniper) |
+| `v10-readme` | README: full documentation | [v9...v10](https://github.com/kvegh/automAIton/compare/v9-sniper...v10-readme) |
+| `v11-cac-intro` | README: CaC + single source of truth intro | [v10...v11](https://github.com/kvegh/automAIton/compare/v10-readme...v11-cac-intro) |
+| `v12-component-test` | sshd-ng test group, one host per stage | [v11...v12](https://github.com/kvegh/automAIton/compare/v11-cac-intro...v12-component-test) |
 
 ## Run
 
@@ -163,4 +194,5 @@ ansible-playbook site.yml --tags openssh    # just OpenSSH tasks
 ansible-playbook site.yml --tags firewall   # just firewalld tasks
 ansible-playbook site.yml --tags sap        # just SAP hosts
 ansible-playbook site.yml --tags pci        # just PCI scope
+ansible-playbook site.yml --limit sshd_ng_test   # just the component test hosts
 ```
