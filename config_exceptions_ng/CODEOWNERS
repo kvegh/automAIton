@@ -1,0 +1,40 @@
+# CODEOWNERS — who must approve changes to which files (GitLab syntax).
+#
+# In a real repository this file lives at the repository root, in docs/ or in
+# .gitlab/ (the first one found wins). Here it sits inside the project as
+# documentation of the pattern, with paths written as if this project were the
+# repository root. Requires GitLab Premium or Ultimate.
+#
+# Settings that must be ON for this file to be enforced
+# (Settings → Repository → Protected branches; Settings → Merge requests):
+#   - main: "Allowed to push and merge" = No one   (unset is NOT restricted —
+#           anyone who may push directly skips every approval rule)
+#   - main: "Require approval from code owners"
+#   - "Prevent editing approval rules in merge requests"
+#   - "Prevent approvals by users who add commits"
+#   - restrict who may unprotect the branch
+#
+# Matching rules:
+#   - A leading "/" anchors the pattern at the root. Without it, the pattern
+#     matches at any depth ("all.yml" would match every all.yml anywhere).
+#   - A trailing "/" covers the directory and everything below it.
+#   - Inside one section, the LAST matching entry wins.
+#   - Separate [sections] are enforced independently: a file matched in two
+#     sections needs an approval from each. Keep overrides in the same section.
+
+[Ownership]
+# Default: the platform team owns everything, including this file.
+/CODEOWNERS                               @platform-team
+/site.yml                                 @platform-team
+/ansible.cfg                              @platform-team
+/collections/                             @platform-team
+/roles/                                   @platform-team
+/inventory/                               @platform-team
+
+# Component-test override. Same section, later line, so the component team is
+# the only required owner of its own group_vars file. Everything else — all.yml,
+# hosts.yml (group membership = which hosts are affected), roles/ — stays with
+# the platform team. The line is added in the merge request that creates the
+# test group and removed in the one that promotes it (README: "Testing a new
+# component version").
+/inventory/group_vars/sshd_ng_test.yml    @sshd-team

@@ -16,6 +16,7 @@ as inventory data — never as host-specific playbooks or conditionals in code.
 ## Directory layout
 
 ```
+CODEOWNERS                      # who must approve changes to which files
 site.yml                        # which groups get which roles
 ansible.cfg                     # points at the inventory
 collections/requirements.yml    # ansible.posix, community.general
@@ -161,6 +162,24 @@ The inventory is back to where it started, and the new version is the
 baseline for all hosts. Host-level exceptions (like the pin on server1)
 are unaffected — `host_vars` still wins.
 
+## Who may change what
+
+One branch does not mean everyone may change everything. `main` is
+protected: no direct pushes, changes only through merge requests. Who
+must approve a merge request depends on which files it touches —
+that is what `CODEOWNERS` defines:
+
+- **Platform team** owns the baseline: `roles/`, `site.yml`, `all.yml`,
+  and `hosts.yml`. Adding a host to a test group is a `hosts.yml` change,
+  so which hosts a test can reach is always reviewed by the platform team.
+- **Component team** owns only its own test group file,
+  `group_vars/sshd_ng_test.yml`. Inside that file they are free; outside
+  it they need the platform team's approval.
+
+The settings that make this enforced, and the matching rules, are in the
+header of `CODEOWNERS`. This is GitLab syntax — GitHub reads the same
+file name but not the `[Section]` syntax.
+
 ## Build history
 
 Each feature was added in a separate commit. You can compare any two
@@ -182,6 +201,7 @@ tags on GitHub to see exactly what changed:
 | `v11-cac-intro` | README: CaC + single source of truth intro | [v10...v11](https://github.com/kvegh/automAIton/compare/v10-readme...v11-cac-intro) |
 | `v12-component-test` | sshd-ng test group, one host per stage | [v11...v12](https://github.com/kvegh/automAIton/compare/v11-cac-intro...v12-component-test) |
 | `v13-promote` | sshd-ng promoted to all.yml, test group dissolved | [v12...v13](https://github.com/kvegh/automAIton/compare/v12-component-test...v13-promote) |
+| `v14-codeowners` | CODEOWNERS: path-level approval on one main | [v13...v14](https://github.com/kvegh/automAIton/compare/v13-promote...v14-codeowners) |
 
 ## Run
 
