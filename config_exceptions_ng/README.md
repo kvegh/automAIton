@@ -128,6 +128,23 @@ Look at three things:
 3. **`host_vars/X.yml`** — if it exists, that file lists everything
    that makes this specific host different.
 
+### If you know Hiera
+
+The inventory is Ansible's data layer, the way Hiera is Puppet's. The
+files map almost one to one:
+
+| Hiera | Ansible |
+|---|---|
+| `data/nodes/<certname>.yaml` | `host_vars/<host>.yml` |
+| `data/roles/<role>.yaml` | `group_vars/<group>.yml` |
+| `data/stage/<stage>.yaml` | `group_vars/<stage>.yml` |
+| `data/common.yaml` | `group_vars/all.yml` |
+| hierarchy in `hiera.yaml` | fixed: `host_vars` > `group_vars` > `all` |
+
+One difference: in Hiera you define the hierarchy yourself. In Ansible
+the order is fixed — a host value beats a group value beats the default.
+Anything more specific is done with group nesting, not with configuration.
+
 ## Adding a new exception
 
 - **Different value, multiple hosts** → create a group, add a
@@ -170,10 +187,19 @@ are unaffected — `host_vars` still wins.
 
 ## Who may change what
 
-One branch does not mean everyone may change everything. `main` is
-protected: no direct pushes, changes only through merge requests. Who
-must approve a merge request depends on which files it touches —
-that is what `CODEOWNERS` defines:
+One branch does not mean everyone may change everything. Three separate
+questions, three separate controls:
+
+- **Who may see** — decided by the repository. Read access on git
+  platforms is always repository-wide; a branch never hides anything
+  from someone who can read the repository.
+- **Who may change** — decided by the protected branch and `CODEOWNERS`.
+- **Who may run against which hosts** — decided in AAP, by job template
+  and inventory permissions.
+
+`main` is protected: no direct pushes, changes only through merge
+requests. Who must approve a merge request depends on which files it
+touches — that is what `CODEOWNERS` defines:
 
 - **Platform team** owns the baseline: `roles/`, `site.yml`, `all.yml`,
   and `hosts.yml`. Adding a host to a test group is a `hosts.yml` change,
@@ -229,6 +255,7 @@ tags on GitHub to see exactly what changed:
 | `v13-promote` | sshd-ng promoted to all.yml, test group dissolved | [v12...v13](https://github.com/kvegh/automAIton/compare/v12-component-test...v13-promote) |
 | `v14-codeowners` | CODEOWNERS: path-level approval on one main | [v13...v14](https://github.com/kvegh/automAIton/compare/v13-promote...v14-codeowners) |
 | `v15-consolidate` | README: branch conversion, group + footprint rules; old `config_exceptions` removed | [v14...v15](https://github.com/kvegh/automAIton/compare/v14-codeowners...v15-consolidate) |
+| `v16-puppet-bridge` | README: Hiera mapping, see/change/run, enforcement by schedule | [v15...v16](https://github.com/kvegh/automAIton/compare/v15-consolidate...v16-puppet-bridge) |
 
 ## Run
 
@@ -240,3 +267,8 @@ ansible-playbook site.yml --tags firewall   # just firewalld tasks
 ansible-playbook site.yml --tags sap        # just SAP hosts
 ansible-playbook site.yml --tags pci        # just PCI scope
 ```
+
+Ansible enforces when a job runs; there is no resident agent that
+re-applies the configuration every 30 minutes the way a Puppet agent
+does. For continuous enforcement, schedule the baseline job template
+in AAP — or trigger it from Event-Driven Ansible.
