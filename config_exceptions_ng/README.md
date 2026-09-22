@@ -22,7 +22,7 @@ collections/requirements.yml    # ansible.posix, community.general
 inventory/
 ├── hosts.yml                   # group membership (cascaded)
 ├── group_vars/
-│   ├── all.yml                 # global defaults (openssh packages)
+│   ├── all.yml                 # global defaults (openssh packages, sshd settings)
 │   ├── appservers.yml          # firewalld ports 8080, 8443
 │   ├── bastion_hosts.yml       # SSH AllowGroups override
 │   ├── db_servers.yml          # sysctl, THP, mount options
@@ -30,7 +30,6 @@ inventory/
 │   ├── dmz.yml                 # proxy settings
 │   ├── pci_scope.yml           # PCI syslog target + retention
 │   ├── prod.yml                # Satellite Prod content view
-│   ├── sshd_ng_test.yml        # sshd-ng component test (temporary)
 │   ├── test.yml                # Satellite Test content view
 │   └── webservers.yml          # firewalld ports 80, 443
 ├── host_vars/
@@ -63,14 +62,13 @@ test                (server4)
 prod                (server1, server2, server3, server5, server6, server7)
 dmz                 (server2, server3, server7)
 pci_scope           (server6, server7)
-sshd_ng_test        (server8, server4, server5)   # temporary
 ```
 
 ## Exception use cases
 
 | UseCase | Type | Hosts | Implementation | Content |
 |---|---|---|---|---|
-| base server config | baseline | all | common role | baseline for all RHEL servers |
+| base server config | baseline | all | common role + all.yml | baseline for all RHEL servers, incl. OpenSSH 8.7p1-52 + sshd settings (promoted from sshd-ng test) |
 | appservers | function | server4, server8 | group_vars | firewalld ports 8080/tcp, 8443/tcp |
 | db_servers | function | server1, server5 | group_vars | sysctl tuning, THP off, mount options |
 | webservers | function | server3, server7 | group_vars | firewalld ports 80/tcp, 443/tcp |
@@ -82,7 +80,6 @@ sshd_ng_test        (server8, server4, server5)   # temporary
 | openssh pin | host | server1 | host_vars | pinned OpenSSH 8.7p1-47.el9_7 |
 | additional users | host | server2 | host_vars | additional_user in ops group |
 | SAP prerequisites | host | server6 | host_vars + extra role | SAP packages, kernel tuning, tmpfiles |
-| sshd-ng test | component test | server8, server4, server5 | group_vars (temporary) | OpenSSH 8.7p1-52 + sshd settings, one host per stage |
 
 ## How it works
 
@@ -184,6 +181,7 @@ tags on GitHub to see exactly what changed:
 | `v10-readme` | README: full documentation | [v9...v10](https://github.com/kvegh/automAIton/compare/v9-sniper...v10-readme) |
 | `v11-cac-intro` | README: CaC + single source of truth intro | [v10...v11](https://github.com/kvegh/automAIton/compare/v10-readme...v11-cac-intro) |
 | `v12-component-test` | sshd-ng test group, one host per stage | [v11...v12](https://github.com/kvegh/automAIton/compare/v11-cac-intro...v12-component-test) |
+| `v13-promote` | sshd-ng promoted to all.yml, test group dissolved | [v12...v13](https://github.com/kvegh/automAIton/compare/v12-component-test...v13-promote) |
 
 ## Run
 
@@ -194,5 +192,4 @@ ansible-playbook site.yml --tags openssh    # just OpenSSH tasks
 ansible-playbook site.yml --tags firewall   # just firewalld tasks
 ansible-playbook site.yml --tags sap        # just SAP hosts
 ansible-playbook site.yml --tags pci        # just PCI scope
-ansible-playbook site.yml --limit sshd_ng_test   # just the component test hosts
 ```

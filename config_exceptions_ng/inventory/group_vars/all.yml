@@ -1,4 +1,8 @@
 ---
+# Promoted from sshd_ng_test after the component test passed.
 openssh_packages:
-  - openssh-server
-  - openssh-clients
+  - openssh-server-8.7p1-52.el9_7
+  - openssh-clients-8.7p1-52.el9_7
+sshd_settings:
+  MaxAuthTries: 3
+  ClientAliveInterval: 300
