@@ -1,6 +1,6 @@
 ---
 - name: Baseline for all hosts
-  hosts: rhel9
+  hosts: all
   roles:
     - common
 

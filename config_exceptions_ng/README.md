@@ -14,17 +14,19 @@ as inventory data — never as host-specific playbooks or conditionals in code.
 
 ## Inventory groups
 
-The inventory uses cascaded groups. Function groups are children of `rhel9`,
-so each host is defined exactly once. Lifecycle, network, and compliance
-groups cut across functions and stay flat.
+All groups are flat. A host is described by the labels it carries: a
+platform, a function, a lifecycle stage, plus any network or compliance
+scope. Adding a platform (say, `rhel10`) is one more label with its own
+`group_vars` file; a host migrates by moving from one label to the other.
 
 ```
-rhel9
-├── db_servers      (server1, server5)
-├── webservers      (server3, server7)
-├── appservers      (server4, server8)
-├── bastion_hosts   (server2)
-└── sap             (server6)
+rhel9               (server1–server8)
+
+db_servers          (server1, server5)
+webservers          (server3, server7)
+appservers          (server4, server8)
+bastion_hosts       (server2)
+sap                 (server6)
 
 dev                 (server8)
 test                (server4)
@@ -41,7 +43,7 @@ site.yml                        # which groups get which roles
 ansible.cfg                     # points at the inventory
 collections/requirements.yml    # ansible.posix, community.general
 inventory/
-├── hosts.yml                   # group membership (cascaded)
+├── hosts.yml                   # group membership (flat)
 ├── group_vars/
 │   ├── all.yml                 # global defaults (openssh packages, sshd settings)
 │   ├── appservers.yml          # firewalld ports 8080, 8443
