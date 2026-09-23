@@ -1,4 +1,4 @@
 ---
-satellite_content_view: "RHEL9_Test"
-satellite_activation_key: "ak-rhel9-test"
+satellite_content_view: "RHEL{{ rhel_major }}_Test"
+satellite_activation_key: "ak-rhel{{ rhel_major }}-test"
 satellite_lifecycle_env: "Test"

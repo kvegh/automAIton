@@ -1,0 +1,5 @@
+---
+rhel_major: 10
+openssh_packages:
+  - openssh-server-9.9p1-4.el10
+  - openssh-clients-9.9p1-4.el10

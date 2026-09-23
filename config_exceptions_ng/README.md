@@ -20,7 +20,8 @@ scope. Adding a platform (say, `rhel10`) is one more label with its own
 `group_vars` file; a host migrates by moving from one label to the other.
 
 ```
-rhel9               (server1–server8)
+rhel9               (server1, server2, server3, server4)
+rhel10              (server5, server6, server7, server8)
 
 db_servers          (server1, server5)
 webservers          (server3, server7)
@@ -53,6 +54,8 @@ inventory/
 │   ├── dmz.yml                 # proxy settings
 │   ├── pci_scope.yml           # PCI syslog target + retention
 │   ├── prod.yml                # Satellite Prod content view
+│   ├── rhel9.yml               # platform: rhel_major 9
+│   ├── rhel10.yml              # platform: rhel_major 10, OpenSSH 9.9 build
 │   ├── test.yml                # Satellite Test content view
 │   └── webservers.yml          # firewalld ports 80, 443
 ├── host_vars/
@@ -72,6 +75,7 @@ roles/
 | UseCase | Type | Hosts | Implementation | Content |
 |---|---|---|---|---|
 | base server config | baseline | all | common role + all.yml | baseline for all RHEL servers, incl. OpenSSH 8.7p1-52 + sshd settings (promoted from sshd-ng test) |
+| rhel9 / rhel10 | platform | 4 each | group_vars | rhel_major; RHEL 10 OpenSSH build; content views derive from rhel_major |
 | appservers | function | server4, server8 | group_vars | firewalld ports 8080/tcp, 8443/tcp |
 | db_servers | function | server1, server5 | group_vars | sysctl tuning, THP off, mount options |
 | webservers | function | server3, server7 | group_vars | firewalld ports 80/tcp, 443/tcp |
