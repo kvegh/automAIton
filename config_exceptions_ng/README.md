@@ -120,6 +120,23 @@ opens ports on webservers and appservers (because their group_vars define
 `firewalld_ports`) and does nothing on all other hosts (empty list, skipped).
 The task itself is the same everywhere — only the data differs.
 
+Two more in the same role:
+
+```yaml
+loop: "{{ sysctl_settings | default({}) | dict2items }}"
+```
+
+applies kernel tuning only where `sysctl_settings` exists (the db_servers
+group) and is skipped everywhere else.
+
+```yaml
+when: proxy_url is defined
+```
+
+writes the proxy configuration only on hosts in the dmz group, which is the
+only place `proxy_url` is set. Same pattern, guarded by `when` instead of an
+empty loop — use `when` for a single value, `| default([])` for a list.
+
 ### 3. Extra roles — different behavior
 
 When a host or group needs different software or services (not just
