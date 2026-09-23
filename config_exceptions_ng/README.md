@@ -43,7 +43,7 @@ sshd_hardening_test (appserver1, appserver2, webserver1)  # in progress
 
 | UseCase | Type | Hosts | Implementation | Content |
 |---|---|---|---|---|
-| base server config | baseline | all | common role + all.yml | baseline for all RHEL servers, incl. OpenSSH 8.7p1-52 + sshd settings (promoted from sshd upgrade test) |
+| base server config | baseline | all | common role + all.yml | baseline for all RHEL servers, incl. OpenSSH 8.7p1-52 + sshd settings (promoted from sshd_upgrade_test) |
 | rhel9 / rhel10 | platform | 5 each | group_vars | rhel_major; RHEL 10 OpenSSH build; content views derive from rhel_major |
 | appservers | function | appserver2, appserver1, appserver3, appserver4 | group_vars | firewalld ports 8080/tcp, 8443/tcp |
 | db_servers | function | dbserver1, dbserver2 | group_vars | sysctl tuning, THP off, mount options |
@@ -54,8 +54,8 @@ sshd_hardening_test (appserver1, appserver2, webserver1)  # in progress
 | dmz | network | bastion1, webserver1, webserver2, appserver3 | group_vars | proxy config (env + dnf + rhsm) |
 | pci_scope | compliance | sapserver1, webserver2 | group_vars + extra role | PCI log forwarding (rsyslog + retention) |
 | openssh pin | host | bastion1 | host_vars | pinned OpenSSH 8.7p1-47.el9_7 |
-| sshd upgrade test | component test | — | group_vars (temporary) | done: promoted to all.yml, group left empty |
-| sshd hardening test | component test | appserver1, appserver2, webserver1 | group_vars (temporary) | in progress: PasswordAuthentication no |
+| sshd_upgrade_test | component test | — | group_vars (temporary) | done: promoted to all.yml, group left empty |
+| sshd_hardening_test | component test | appserver1, appserver2, webserver1 | group_vars (temporary) | in progress: PasswordAuthentication no |
 | additional users | host | dbserver1 | host_vars | additional_user in ops group |
 | sap | function | sapserver1 | group_vars + extra role | SAP packages, kernel tuning, tmpfiles |
 
@@ -268,8 +268,8 @@ tags on GitHub to see exactly what changed:
 | `v9-sniper` | host-level: openssh pin, users, SAP | [v8...v9](https://github.com/kvegh/automAIton/compare/v8-network-compliance...v9-sniper) |
 | `v10-readme` | README: full documentation | [v9...v10](https://github.com/kvegh/automAIton/compare/v9-sniper...v10-readme) |
 | `v11-cac-intro` | README: CaC + single source of truth intro | [v10...v11](https://github.com/kvegh/automAIton/compare/v10-readme...v11-cac-intro) |
-| `v12-component-test` | sshd upgrade test group, one host per stage | [v11...v12](https://github.com/kvegh/automAIton/compare/v11-cac-intro...v12-component-test) |
-| `v13-promote` | sshd upgrade promoted to all.yml, test group dissolved | [v12...v13](https://github.com/kvegh/automAIton/compare/v12-component-test...v13-promote) |
+| `v12-component-test` | sshd_upgrade_test group, one host per stage | [v11...v12](https://github.com/kvegh/automAIton/compare/v11-cac-intro...v12-component-test) |
+| `v13-promote` | sshd_upgrade_test promoted to all.yml, group dissolved | [v12...v13](https://github.com/kvegh/automAIton/compare/v12-component-test...v13-promote) |
 | `v14-codeowners` | CODEOWNERS: path-level approval on one main | [v13...v14](https://github.com/kvegh/automAIton/compare/v13-promote...v14-codeowners) |
 | `v15-consolidate` | README: branch conversion, group + footprint rules; old `config_exceptions` removed | [v14...v15](https://github.com/kvegh/automAIton/compare/v14-codeowners...v15-consolidate) |
 | `v16-puppet-bridge` | README: Hiera mapping, see/change/run, enforcement by schedule | [v15...v16](https://github.com/kvegh/automAIton/compare/v15-consolidate...v16-puppet-bridge) |
