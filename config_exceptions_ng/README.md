@@ -106,7 +106,7 @@ Tasks that run on every host unconditionally. This is the standard your
 RHEL servers share: package baselines, security settings, anything that
 defines how you run your estate.
 
-### 2. Common role — variable-driven tasks
+### 2. Common config — variable-driven tasks
 
 The common role also contains tasks that only take effect when the right
 variable is present. Ansible merges all `group_vars` and `host_vars` for
