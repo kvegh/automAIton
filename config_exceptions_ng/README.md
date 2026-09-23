@@ -63,7 +63,7 @@ sshd_hardening_test (appserver1, appserver2, webserver1)  # in progress
 ## Directory layout
 
 ```
-CODEOWNERS                      # who must approve changes to which files
+CODEOWNERS.example              # who must approve changes to which files (template)
 site.yml                        # which groups get which roles
 ansible.cfg                     # points at the inventory
 collections/requirements.yml    # ansible.posix, community.general
@@ -244,7 +244,7 @@ touches — that is what `CODEOWNERS` defines:
   it they need the platform team's approval.
 
 The settings that make this enforced, and the matching rules, are in the
-header of `CODEOWNERS`. This is GitLab syntax — GitHub reads the same
+header of `CODEOWNERS.example`. This is GitLab syntax — GitHub reads the same
 file name but not the `[Section]` syntax.
 
 ## Converting an existing branch
