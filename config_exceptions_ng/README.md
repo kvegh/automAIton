@@ -192,6 +192,9 @@ Anything more specific is done with group nesting, not with configuration.
 - **No exception → no file.** webserver1 and webserver2 have no `host_vars` at
   all; their entire configuration comes from group membership.
 
+When two groups a host shares set the **same** variable, see
+[edge_cases.md](edge_cases.md) → *Overlapping group variables*.
+
 ## Testing a new component version
 
 A new version of a component (here: sshd upgrade) is tested on a few hosts
