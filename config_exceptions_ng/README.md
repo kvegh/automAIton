@@ -20,23 +20,23 @@ scope. Adding a platform (say, `rhel10`) is one more label with its own
 `group_vars` file; a host migrates by moving from one label to the other.
 
 ```
-rhel9               (server1, server2, server3, server4, server9)
-rhel10              (server5, server6, server7, server8, server10)
+rhel9               (dbserver1, bastion1, webserver1, appserver2, appserver3)
+rhel10              (dbserver2, sapserver1, webserver2, appserver1, appserver4)
 
-db_servers          (server1, server5)
-webservers          (server3, server7)
-appservers          (server4, server8, server9, server10)
-bastion_hosts       (server2)
-sap                 (server6)
+db_servers          (dbserver1, dbserver2)
+webservers          (webserver1, webserver2)
+appservers          (appserver2, appserver1, appserver3, appserver4)
+bastion_hosts       (bastion1)
+sap                 (sapserver1)
 
-dev                 (server8)
-test                (server4)
-prod                (server1, server2, server3, server5, server6, server7, server9, server10)
-dmz                 (server2, server3, server7, server9)
-pci_scope           (server6, server7)
+dev                 (appserver1)
+test                (appserver2)
+prod                (dbserver1, bastion1, webserver1, dbserver2, sapserver1, webserver2, appserver3, appserver4)
+dmz                 (bastion1, webserver1, webserver2, appserver3)
+pci_scope           (sapserver1, webserver2)
 
 sshd_upgrade_test   ()                          # promoted, now empty
-sshd_hardening_test (server8, server4, server3)  # in progress
+sshd_hardening_test (appserver1, appserver2, webserver1)  # in progress
 ```
 
 ## Exception use cases
@@ -45,19 +45,19 @@ sshd_hardening_test (server8, server4, server3)  # in progress
 |---|---|---|---|---|
 | base server config | baseline | all | common role + all.yml | baseline for all RHEL servers, incl. OpenSSH 8.7p1-52 + sshd settings (promoted from sshd upgrade test) |
 | rhel9 / rhel10 | platform | 5 each | group_vars | rhel_major; RHEL 10 OpenSSH build; content views derive from rhel_major |
-| appservers | function | server4, server8, server9, server10 | group_vars | firewalld ports 8080/tcp, 8443/tcp |
-| db_servers | function | server1, server5 | group_vars | sysctl tuning, THP off, mount options |
-| webservers | function | server3, server7 | group_vars | firewalld ports 80/tcp, 443/tcp |
-| dev | lifecycle | server8 | group_vars | Sat. Dev Content View + Activation Key |
-| test | lifecycle | server4 | group_vars | Sat. Test Content View + Activation Key |
-| prod | lifecycle | server1,2,3,5,6,7,9,10 | group_vars | Sat. Prod Content View + Activation Key |
-| dmz | network | server2, server3, server7, server9 | group_vars | proxy config (env + dnf + rhsm) |
-| pci_scope | compliance | server6, server7 | group_vars + extra role | PCI log forwarding (rsyslog + retention) |
-| openssh pin | host | server1 | host_vars | pinned OpenSSH 8.7p1-47.el9_7 |
+| appservers | function | appserver2, appserver1, appserver3, appserver4 | group_vars | firewalld ports 8080/tcp, 8443/tcp |
+| db_servers | function | dbserver1, dbserver2 | group_vars | sysctl tuning, THP off, mount options |
+| webservers | function | webserver1, webserver2 | group_vars | firewalld ports 80/tcp, 443/tcp |
+| dev | lifecycle | appserver1 | group_vars | Sat. Dev Content View + Activation Key |
+| test | lifecycle | appserver2 | group_vars | Sat. Test Content View + Activation Key |
+| prod | lifecycle | dbserver1, dbserver2, webserver1, webserver2, bastion1, sapserver1, appserver3, appserver4 | group_vars | Sat. Prod Content View + Activation Key |
+| dmz | network | bastion1, webserver1, webserver2, appserver3 | group_vars | proxy config (env + dnf + rhsm) |
+| pci_scope | compliance | sapserver1, webserver2 | group_vars + extra role | PCI log forwarding (rsyslog + retention) |
+| openssh pin | host | dbserver1 | host_vars | pinned OpenSSH 8.7p1-47.el9_7 |
 | sshd upgrade test | component test | — | group_vars (temporary) | done: promoted to all.yml, group left empty |
-| sshd hardening test | component test | server8, server4, server3 | group_vars (temporary) | in progress: PasswordAuthentication no |
-| additional users | host | server2 | host_vars | additional_user in ops group |
-| SAP prerequisites | host | server6 | host_vars + extra role | SAP packages, kernel tuning, tmpfiles |
+| sshd hardening test | component test | appserver1, appserver2, webserver1 | group_vars (temporary) | in progress: PasswordAuthentication no |
+| additional users | host | bastion1 | host_vars | additional_user in ops group |
+| SAP prerequisites | host | sapserver1 | host_vars + extra role | SAP packages, kernel tuning, tmpfiles |
 
 
 ## Directory layout
@@ -84,9 +84,9 @@ inventory/
 │   ├── test.yml                # Satellite Test content view
 │   └── webservers.yml          # firewalld ports 80, 443
 ├── host_vars/
-│   ├── server1.yml             # OpenSSH version pin
-│   ├── server2.yml             # additional users
-│   └── server6.yml             # SAP kernel tuning
+│   ├── dbserver1.yml             # OpenSSH version pin
+│   ├── bastion1.yml             # additional users
+│   └── sapserver1.yml             # SAP kernel tuning
 roles/
 ├── common/                     # baseline + conditional tasks for all hosts
 ├── bastion_hardening/          # SSH policy + session recording
@@ -169,9 +169,9 @@ Anything more specific is done with group nesting, not with configuration.
   add a play to `site.yml`.
 - **Two or more hosts with the same `host_vars`** → that is a group. Create
   it, move the values to `group_vars`, delete the `host_vars` files.
-  `db_servers` (server1, server5) is the example: shared sysctl and mount
+  `db_servers` (dbserver1, dbserver2) is the example: shared sysctl and mount
   options live in one `group_vars` file, not in two identical `host_vars`.
-- **No exception → no file.** server3 and server7 have no `host_vars` at
+- **No exception → no file.** webserver1 and webserver2 have no `host_vars` at
   all; their entire configuration comes from group membership.
 
 ## Testing a new component version
@@ -196,7 +196,7 @@ untouched.
 2. Delete `group_vars/sshd_upgrade_test.yml` and the group in `hosts.yml`.
 
 The inventory is back to where it started, and the new version is the
-baseline for all hosts. Host-level exceptions (like the pin on server1)
+baseline for all hosts. Host-level exceptions (like the pin on dbserver1)
 are unaffected — `host_vars` still wins.
 
 On `main` right now: `sshd_upgrade_test` went through both steps and is
