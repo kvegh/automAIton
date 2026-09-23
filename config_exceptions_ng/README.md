@@ -86,8 +86,7 @@ inventory/
 │   └── webservers.yml          # firewalld ports 80, 443
 ├── host_vars/
 │   ├── dbserver1.yml             # OpenSSH version pin
-│   ├── bastion1.yml             # additional users
-│   └── sapserver1.yml             # SAP kernel tuning
+│   └── bastion1.yml             # additional users
 roles/
 ├── common/                     # baseline + conditional tasks for all hosts
 ├── bastion_hardening/          # SSH policy + session recording
