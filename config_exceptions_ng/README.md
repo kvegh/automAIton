@@ -40,7 +40,7 @@ pci_scope           (server6, server7)
 
 | UseCase | Type | Hosts | Implementation | Content |
 |---|---|---|---|---|
-| base server config | baseline | all | common role + all.yml | baseline for all RHEL servers, incl. OpenSSH 8.7p1-52 + sshd settings (promoted from sshd-ng test) |
+| base server config | baseline | all | common role + all.yml | baseline for all RHEL servers, incl. OpenSSH 8.7p1-52 + sshd settings (promoted from sshd upgrade test) |
 | rhel9 / rhel10 | platform | 4 each | group_vars | rhel_major; RHEL 10 OpenSSH build; content views derive from rhel_major |
 | appservers | function | server4, server8 | group_vars | firewalld ports 8080/tcp, 8443/tcp |
 | db_servers | function | server1, server5 | group_vars | sysctl tuning, THP off, mount options |
@@ -170,15 +170,15 @@ Anything more specific is done with group nesting, not with configuration.
 
 ## Testing a new component version
 
-A new version of a component (here: sshd-ng) is tested on a few hosts
+A new version of a component (here: sshd upgrade) is tested on a few hosts
 before it becomes the baseline. No branch, no separate inventory.
 
 **Test:**
 
-1. Create a group `sshd_ng_test` in `hosts.yml` with one host per stage
+1. Create a group `sshd_upgrade_test` in `hosts.yml` with one host per stage
    (dev, test, prod).
-2. Put the new version and its settings in `group_vars/sshd_ng_test.yml`.
-3. Run `site.yml` — or just `--limit sshd_ng_test`.
+2. Put the new version and its settings in `group_vars/sshd_upgrade_test.yml`.
+3. Run `site.yml` — or just `--limit sshd_upgrade_test`.
 
 The test hosts stay in all their other groups. They keep receiving every
 baseline change during the test. Everything else in the inventory is
@@ -186,8 +186,8 @@ untouched.
 
 **Promote:**
 
-1. Move the values from `group_vars/sshd_ng_test.yml` into `all.yml`.
-2. Delete `group_vars/sshd_ng_test.yml` and the group in `hosts.yml`.
+1. Move the values from `group_vars/sshd_upgrade_test.yml` into `all.yml`.
+2. Delete `group_vars/sshd_upgrade_test.yml` and the group in `hosts.yml`.
 
 The inventory is back to where it started, and the new version is the
 baseline for all hosts. Host-level exceptions (like the pin on server1)
@@ -213,7 +213,7 @@ touches — that is what `CODEOWNERS` defines:
   and `hosts.yml`. Adding a host to a test group is a `hosts.yml` change,
   so which hosts a test can reach is always reviewed by the platform team.
 - **Component team** owns only its own test group file,
-  `group_vars/sshd_ng_test.yml`. Inside that file they are free; outside
+  `group_vars/sshd_upgrade_test.yml`. Inside that file they are free; outside
   it they need the platform team's approval.
 
 The settings that make this enforced, and the matching rules, are in the
@@ -259,8 +259,8 @@ tags on GitHub to see exactly what changed:
 | `v9-sniper` | host-level: openssh pin, users, SAP | [v8...v9](https://github.com/kvegh/automAIton/compare/v8-network-compliance...v9-sniper) |
 | `v10-readme` | README: full documentation | [v9...v10](https://github.com/kvegh/automAIton/compare/v9-sniper...v10-readme) |
 | `v11-cac-intro` | README: CaC + single source of truth intro | [v10...v11](https://github.com/kvegh/automAIton/compare/v10-readme...v11-cac-intro) |
-| `v12-component-test` | sshd-ng test group, one host per stage | [v11...v12](https://github.com/kvegh/automAIton/compare/v11-cac-intro...v12-component-test) |
-| `v13-promote` | sshd-ng promoted to all.yml, test group dissolved | [v12...v13](https://github.com/kvegh/automAIton/compare/v12-component-test...v13-promote) |
+| `v12-component-test` | sshd upgrade test group, one host per stage | [v11...v12](https://github.com/kvegh/automAIton/compare/v11-cac-intro...v12-component-test) |
+| `v13-promote` | sshd upgrade promoted to all.yml, test group dissolved | [v12...v13](https://github.com/kvegh/automAIton/compare/v12-component-test...v13-promote) |
 | `v14-codeowners` | CODEOWNERS: path-level approval on one main | [v13...v14](https://github.com/kvegh/automAIton/compare/v13-promote...v14-codeowners) |
 | `v15-consolidate` | README: branch conversion, group + footprint rules; old `config_exceptions` removed | [v14...v15](https://github.com/kvegh/automAIton/compare/v14-codeowners...v15-consolidate) |
 | `v16-puppet-bridge` | README: Hiera mapping, see/change/run, enforcement by schedule | [v15...v16](https://github.com/kvegh/automAIton/compare/v15-consolidate...v16-puppet-bridge) |

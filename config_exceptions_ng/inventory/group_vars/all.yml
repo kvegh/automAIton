@@ -1,5 +1,5 @@
 ---
-# Promoted from sshd_ng_test after the component test passed.
+# Promoted from sshd_upgrade_test after the component test passed.
 openssh_packages:
   - openssh-server-8.7p1-52.el9_7
   - openssh-clients-8.7p1-52.el9_7
