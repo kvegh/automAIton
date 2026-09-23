@@ -2,8 +2,7 @@
 
 This is **Configuration as Code (CaC)**. The complete configuration of
 every server is defined as files in this git repository. Git is the
-single source of truth — if you want to know how a server is configured,
-you look here, not on the server.
+single source of truth.
 
 Changes go through merge requests, are reviewed, and leave a full audit
 trail in git history. No undocumented changes, no configuration drift.
