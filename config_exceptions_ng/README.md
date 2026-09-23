@@ -267,21 +267,28 @@ ssl_min_protocol: "TLSv1"
 Nothing was migrated and no group was created; the branch was closed.
 Converting a branch is also the moment to remove what no longer belongs.
 
-## Build history
+## Inspecting a host
 
-Each feature was added in a separate commit, one tag per step. See
-[build_history.md](build_history.md) for the full list with compare links.
+Two questions, two commands.
 
-## Run
+**What variables will a host get?** The resolved `group_vars` + `host_vars`,
+no connection to the host needed:
 
 ```
-ansible-galaxy collection install -r collections/requirements.yml
-ansible-playbook site.yml                   # everything
-ansible-playbook site.yml --tags openssh    # just OpenSSH tasks
-ansible-playbook site.yml --tags firewall   # just firewalld tasks
-ansible-playbook site.yml --tags sap        # just SAP hosts
-ansible-playbook site.yml --tags pci        # just PCI scope
+ansible-inventory --host dbserver1
 ```
+
+**What would actually change on it?** A dry run - `--check` changes nothing,
+`--diff` shows the line-by-line difference:
+
+```
+ansible-playbook site.yml --limit dbserver1 --check --diff
+```
+
+Narrow it further with `--tags firewall` for one concern, or
+`--limit webservers` for a whole group. This is the same check the CI
+pipeline runs on a merge request, so the impact is visible before anything
+is applied.
 
 Ansible enforces when a job runs; there is no resident agent that
 re-applies the configuration every 30 minutes the way a Puppet agent
