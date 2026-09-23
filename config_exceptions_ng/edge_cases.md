@@ -4,7 +4,7 @@
 
 A host belongs to several groups at once. When two of those groups set the
 **same variable**, they sit at the same precedence level and Ansible does
-**not** merge them — it picks one group's value (by `ansible_group_priority`,
+**not** merge them - it picks one group's value (by `ansible_group_priority`,
 then, as a last resort, group name). Relying on that is fragile: a value
 wins by accident, and adding a group later can silently change the outcome.
 
@@ -16,7 +16,7 @@ There are two correct answers, depending on what you actually mean.
 
 ### You want to combine them (usual case)
 
-The two groups describe two different axes — a function *and* a stage — so
+The two groups describe two different axes - a function *and* a stage - so
 they are two variables, not one. Give each its own key and union them in the
 task:
 
@@ -51,7 +51,7 @@ is visible where the variable is used.
 
 ### You want one group to override the other
 
-Sometimes the intent really is "this group's value replaces the others" —
+Sometimes the intent really is "this group's value replaces the others" -
 a `security_lockdown` or `compliance` group whose settings must win over
 whatever a function or stage set. Make that explicit with
 `ansible_group_priority` on the authoritative group:
@@ -70,7 +70,7 @@ deterministic, on-purpose choice.
 
 **Use it sparingly.** `ansible_group_priority` is action at a distance: the
 override is not visible where the variable is used, only by knowing each
-group's priority number — the same "hold the hierarchy in your head" problem
+group's priority number - the same "hold the hierarchy in your head" problem
 that the flat model set out to avoid. Reserve it for a small number of
 clearly authoritative groups, and always comment why the number is there.
 For anything additive, use the union pattern above instead.

@@ -10,7 +10,7 @@ trail in git history. No undocumented changes, no configuration drift.
 **Principle: exceptions are data in git.**
 
 All hosts run the same code. Anything host- or group-specific is expressed
-as inventory data — never as host-specific playbooks or conditionals in code.
+as inventory data - never as host-specific playbooks or conditionals in code.
 
 ## Inventory groups
 
@@ -52,7 +52,7 @@ sshd_hardening_test (appserver1, appserver2, webserver1)  # in progress
 | test | lifecycle | appserver2 | group_vars | Sat. Test Content View + Activation Key |
 | prod | lifecycle | dbserver1, dbserver2, webserver1, webserver2, bastion1, sapserver1, appserver3, appserver4 | group_vars | Sat. Prod Content View + Activation Key |
 | dmz | network | bastion1, webserver1, webserver2, appserver3 | group_vars | proxy config (env + dnf + rhsm) |
-| sshd_upgrade_test | component test | — | group_vars (temporary) | done: promoted to all.yml, group left empty |
+| sshd_upgrade_test | component test | - | group_vars (temporary) | done: promoted to all.yml, group left empty |
 | sshd_hardening_test | component test | appserver1, appserver2, webserver1 | group_vars (temporary) | in progress: PasswordAuthentication no |
 | openssh pin | host | bastion1 | host_vars | pinned OpenSSH 8.7p1-47.el9_7 |
 | additional users | host | dbserver1 | host_vars | additional_user in ops group |
@@ -100,13 +100,13 @@ roles/
 
 Configuration is applied in three layers:
 
-### 1. Common role — baseline
+### 1. Common role - baseline
 
 Tasks that run on every host unconditionally. This is the standard your
 RHEL servers share: package baselines, security settings, anything that
 defines how you run your estate.
 
-### 2. Common config — variable-driven tasks
+### 2. Common config - variable-driven tasks
 
 The common role also contains tasks that only take effect when the right
 variable is present. Ansible merges all `group_vars` and `host_vars` for
@@ -118,7 +118,7 @@ loop: "{{ firewalld_ports | default([]) }}"
 
 opens ports on webservers and appservers (because their group_vars define
 `firewalld_ports`) and does nothing on all other hosts (empty list, skipped).
-The task itself is the same everywhere — only the data differs.
+The task itself is the same everywhere - only the data differs.
 
 Two more in the same role:
 
@@ -135,10 +135,10 @@ when: proxy_url is defined
 
 writes the proxy configuration only on hosts in the dmz group, which is the
 only place `proxy_url` is set. Same pattern, guarded by `when` instead of an
-empty loop — use `when` for a single value, `| default([])` for a list.
+empty loop - use `when` for a single value, `| default([])` for a list.
 (Same effect either way; the choice just follows the data shape.)
 
-### 3. Extra roles — different behavior
+### 3. Extra roles - different behavior
 
 When a host or group needs different software or services (not just
 different values), it gets its own role. The role is assigned through
@@ -154,10 +154,10 @@ the inventory, and add a play to `site.yml`.
 
 Look at three things:
 
-1. **Common role** — always runs.
-2. **Group memberships** in `hosts.yml` — determines which extra roles
+1. **Common role** - always runs.
+2. **Group memberships** in `hosts.yml` - determines which extra roles
    and which group_vars apply.
-3. **`host_vars/X.yml`** — if it exists, that file lists everything
+3. **`host_vars/X.yml`** - if it exists, that file lists everything
    that makes this specific host different.
 
 ### If you know Hiera
@@ -174,7 +174,7 @@ files map almost one to one:
 | hierarchy in `hiera.yaml` | fixed: `host_vars` > `group_vars` > `all` |
 
 One difference: in Hiera you define the hierarchy yourself. In Ansible
-the order is fixed — a host value beats a group value beats the default.
+the order is fixed - a host value beats a group value beats the default.
 Anything more specific is done with group nesting, not with configuration.
 
 ## Adding a new exception
@@ -202,7 +202,7 @@ before it becomes the baseline. No branch, no separate inventory.
 1. Create a group `sshd_upgrade_test` in `hosts.yml` with one host per stage
    (dev, test, prod).
 2. Put the new version and its settings in `group_vars/sshd_upgrade_test.yml`.
-3. Run `site.yml` — or just `--limit sshd_upgrade_test`.
+3. Run `site.yml` - or just `--limit sshd_upgrade_test`.
 
 The test hosts stay in all their other groups. They keep receiving every
 baseline change during the test. Everything else in the inventory is
@@ -215,7 +215,7 @@ untouched.
 
 The inventory is back to where it started, and the new version is the
 baseline for all hosts. Host-level exceptions (like the pin on dbserver1)
-are unaffected — `host_vars` still wins.
+are unaffected - `host_vars` still wins.
 
 On `main` right now: `sshd_upgrade_test` went through both steps and is
 empty; `sshd_hardening_test` is in the test step.
@@ -225,16 +225,16 @@ empty; `sshd_hardening_test` is in the test step.
 One branch does not mean everyone may change everything. Three separate
 questions, three separate controls:
 
-- **Who may see** — decided by the repository. Read access on git
+- **Who may see** - decided by the repository. Read access on git
   platforms is always repository-wide; a branch never hides anything
   from someone who can read the repository.
-- **Who may change** — decided by the protected branch and `CODEOWNERS`.
-- **Who may run against which hosts** — decided in AAP, by job template
+- **Who may change** - decided by the protected branch and `CODEOWNERS`.
+- **Who may run against which hosts** - decided in AAP, by job template
   and inventory permissions.
 
 `main` is protected: no direct pushes, changes only through merge
 requests. Who must approve a merge request depends on which files it
-touches — that is what `CODEOWNERS` defines:
+touches - that is what `CODEOWNERS` defines:
 
 - **Platform team** owns the baseline: `roles/`, `site.yml`, `all.yml`,
   and `hosts.yml`. Adding a host to a test group is a `hosts.yml` change,
@@ -244,7 +244,7 @@ touches — that is what `CODEOWNERS` defines:
   it they need the platform team's approval.
 
 The settings that make this enforced, and the matching rules, are in the
-header of `CODEOWNERS.example`. This is GitLab syntax — GitHub reads the same
+header of `CODEOWNERS.example`. This is GitLab syntax - GitHub reads the same
 file name but not the `[Section]` syntax.
 
 ## Converting an existing branch
@@ -286,4 +286,4 @@ ansible-playbook site.yml --tags pci        # just PCI scope
 Ansible enforces when a job runs; there is no resident agent that
 re-applies the configuration every 30 minutes the way a Puppet agent
 does. For continuous enforcement, schedule the baseline job template
-in AAP — or trigger it from Event-Driven Ansible.
+in AAP - or trigger it from Event-Driven Ansible.

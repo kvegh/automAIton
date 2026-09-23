@@ -1,5 +1,5 @@
 # {{ ansible_managed }}
-# sshd settings — managed by role common.
+# sshd settings - managed by role common.
 {% for key, value in sshd_settings.items() %}
 {{ key }} {{ value }}
 {% endfor %}

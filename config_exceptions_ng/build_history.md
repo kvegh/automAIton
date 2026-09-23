@@ -6,7 +6,7 @@ tags on GitHub to see exactly what changed:
 
 | Tag | Description | Diff |
 |---|---|---|
-| `v0-skeleton` | empty project scaffold | — |
+| `v0-skeleton` | empty project scaffold | - |
 | `v1-inventory` | inventory with all groups | [v0-skeleton...v1-inventory](https://github.com/kvegh/automAIton/compare/v0-skeleton...v1-inventory) |
 | `v2-bastion` | bastion hardening role | [v1...v2](https://github.com/kvegh/automAIton/compare/v1-inventory...v2-bastion) |
 | `v3-appservers` | appserver firewalld ports | [v2...v3](https://github.com/kvegh/automAIton/compare/v2-bastion...v3-appservers) |

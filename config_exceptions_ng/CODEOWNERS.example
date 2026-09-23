@@ -1,4 +1,4 @@
-# CODEOWNERS — who must approve changes to which files (GitLab syntax).
+# CODEOWNERS - who must approve changes to which files (GitLab syntax).
 #
 # In a real repository this file lives at the repository root, in docs/ or in
 # .gitlab/ (the first one found wins). Here it sits inside the project as
@@ -7,7 +7,7 @@
 #
 # Settings that must be ON for this file to be enforced
 # (Settings → Repository → Protected branches; Settings → Merge requests):
-#   - main: "Allowed to push and merge" = No one   (unset is NOT restricted —
+#   - main: "Allowed to push and merge" = No one   (unset is NOT restricted -
 #           anyone who may push directly skips every approval rule)
 #   - main: "Require approval from code owners"
 #   - "Prevent editing approval rules in merge requests"
@@ -32,8 +32,8 @@
 /inventory/                               @platform-team
 
 # Component-test override. Same section, later line, so the component team is
-# the only required owner of its own group_vars file. Everything else — all.yml,
-# hosts.yml (group membership = which hosts are affected), roles/ — stays with
+# the only required owner of its own group_vars file. Everything else - all.yml,
+# hosts.yml (group membership = which hosts are affected), roles/ - stays with
 # the platform team. The line is added in the merge request that creates the
 # test group and removed in the one that promotes it (README: "Testing a new
 # component version").
