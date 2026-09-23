@@ -1,5 +1,15 @@
 # Inventory-Driven Exception Handling
 
+**Start here.** This repo shows how a new version of a component is tested
+on one host per stage and then promoted to the baseline. Read
+[Testing a new component version](#testing-a-new-component-version), then
+walk the diffs:
+[v11→v12](https://github.com/kvegh/automAIton/compare/v11-cac-intro...v12-component-test) start a test ·
+[v12→v13](https://github.com/kvegh/automAIton/compare/v12-component-test...v13-promote) promote ·
+[v13→v14](https://github.com/kvegh/automAIton/compare/v13-promote...v14-codeowners) who may change what.
+
+---
+
 This is **Configuration as Code (CaC)**. The complete configuration of
 every server is defined as files in this git repository. Git is the
 single source of truth — if you want to know how a server is configured,
