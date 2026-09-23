@@ -45,18 +45,18 @@ sshd_hardening_test (appserver1, appserver2, webserver1)  # in progress
 |---|---|---|---|---|
 | base server config | baseline | all | common role + all.yml | baseline for all RHEL servers, incl. OpenSSH 8.7p1-52 + sshd settings (promoted from sshd upgrade test) |
 | rhel9 / rhel10 | platform | 5 each | group_vars | rhel_major; RHEL 10 OpenSSH build; content views derive from rhel_major |
-| appservers | function | appserver2, appserver1, appserver3, appserver4 | group_vars | firewalld ports 8080/tcp, 8443/tcp |
+| appservers | function | appserver1, appserver2, appserver3, appserver4 | group_vars | firewalld ports 8080/tcp, 8443/tcp |
 | db_servers | function | dbserver1, dbserver2 | group_vars | sysctl tuning, THP off, mount options |
 | webservers | function | webserver1, webserver2 | group_vars | firewalld ports 80/tcp, 443/tcp |
 | dev | lifecycle | appserver1 | group_vars | Sat. Dev Content View + Activation Key |
 | test | lifecycle | appserver2 | group_vars | Sat. Test Content View + Activation Key |
 | prod | lifecycle | dbserver1, dbserver2, webserver1, webserver2, bastion1, sapserver1, appserver3, appserver4 | group_vars | Sat. Prod Content View + Activation Key |
 | dmz | network | bastion1, webserver1, webserver2, appserver3 | group_vars | proxy config (env + dnf + rhsm) |
-| pci_scope | compliance | sapserver1, webserver2 | group_vars + extra role | PCI log forwarding (rsyslog + retention) |
-| openssh pin | host | bastion1 | host_vars | pinned OpenSSH 8.7p1-47.el9_7 |
 | sshd_upgrade_test | component test | — | group_vars (temporary) | done: promoted to all.yml, group left empty |
 | sshd_hardening_test | component test | appserver1, appserver2, webserver1 | group_vars (temporary) | in progress: PasswordAuthentication no |
+| openssh pin | host | bastion1 | host_vars | pinned OpenSSH 8.7p1-47.el9_7 |
 | additional users | host | dbserver1 | host_vars | additional_user in ops group |
+| pci_scope | compliance | sapserver1, webserver2 | group_vars + extra role | PCI log forwarding (rsyslog + retention) |
 | sap | function | sapserver1 | group_vars + extra role | SAP packages, kernel tuning, tmpfiles |
 
 
