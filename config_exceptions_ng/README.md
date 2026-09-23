@@ -53,10 +53,10 @@ sshd_hardening_test (appserver1, appserver2, webserver1)  # in progress
 | prod | lifecycle | dbserver1, dbserver2, webserver1, webserver2, bastion1, sapserver1, appserver3, appserver4 | group_vars | Sat. Prod Content View + Activation Key |
 | dmz | network | bastion1, webserver1, webserver2, appserver3 | group_vars | proxy config (env + dnf + rhsm) |
 | pci_scope | compliance | sapserver1, webserver2 | group_vars + extra role | PCI log forwarding (rsyslog + retention) |
-| openssh pin | host | dbserver1 | host_vars | pinned OpenSSH 8.7p1-47.el9_7 |
+| openssh pin | host | bastion1 | host_vars | pinned OpenSSH 8.7p1-47.el9_7 |
 | sshd upgrade test | component test | — | group_vars (temporary) | done: promoted to all.yml, group left empty |
 | sshd hardening test | component test | appserver1, appserver2, webserver1 | group_vars (temporary) | in progress: PasswordAuthentication no |
-| additional users | host | bastion1 | host_vars | additional_user in ops group |
+| additional users | host | dbserver1 | host_vars | additional_user in ops group |
 | sap | function | sapserver1 | group_vars + extra role | SAP packages, kernel tuning, tmpfiles |
 
 
@@ -85,8 +85,8 @@ inventory/
 │   ├── test.yml                # Satellite Test content view
 │   └── webservers.yml          # firewalld ports 80, 443
 ├── host_vars/
-│   ├── dbserver1.yml             # OpenSSH version pin
-│   └── bastion1.yml             # additional users
+│   ├── bastion1.yml             # OpenSSH version pin
+│   └── dbserver1.yml            # additional users
 roles/
 ├── common/                     # baseline + conditional tasks for all hosts
 ├── bastion_hardening/          # SSH policy + session recording
