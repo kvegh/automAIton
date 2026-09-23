@@ -136,6 +136,7 @@ when: proxy_url is defined
 writes the proxy configuration only on hosts in the dmz group, which is the
 only place `proxy_url` is set. Same pattern, guarded by `when` instead of an
 empty loop — use `when` for a single value, `| default([])` for a list.
+(Same effect either way; the choice just follows the data shape.)
 
 ### 3. Extra roles — different behavior
 
