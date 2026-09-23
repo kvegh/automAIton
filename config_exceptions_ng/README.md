@@ -57,7 +57,7 @@ sshd_hardening_test (appserver1, appserver2, webserver1)  # in progress
 | sshd upgrade test | component test | — | group_vars (temporary) | done: promoted to all.yml, group left empty |
 | sshd hardening test | component test | appserver1, appserver2, webserver1 | group_vars (temporary) | in progress: PasswordAuthentication no |
 | additional users | host | bastion1 | host_vars | additional_user in ops group |
-| SAP prerequisites | host | sapserver1 | host_vars + extra role | SAP packages, kernel tuning, tmpfiles |
+| sap | function | sapserver1 | group_vars + extra role | SAP packages, kernel tuning, tmpfiles |
 
 
 ## Directory layout
@@ -79,6 +79,7 @@ inventory/
 │   ├── pci_scope.yml           # PCI syslog target + retention
 │   ├── prod.yml                # Satellite Prod content view
 │   ├── rhel9.yml               # platform: rhel_major 9
+│   ├── sap.yml                 # SAP kernel tuning
 │   ├── rhel10.yml              # platform: rhel_major 10, OpenSSH 9.9 build
 │   ├── sshd_hardening_test.yml # component test in progress
 │   ├── test.yml                # Satellite Test content view
