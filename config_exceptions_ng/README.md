@@ -36,6 +36,25 @@ dmz                 (server2, server3, server7)
 pci_scope           (server6, server7)
 ```
 
+## Exception use cases
+
+| UseCase | Type | Hosts | Implementation | Content |
+|---|---|---|---|---|
+| base server config | baseline | all | common role + all.yml | baseline for all RHEL servers, incl. OpenSSH 8.7p1-52 + sshd settings (promoted from sshd-ng test) |
+| rhel9 / rhel10 | platform | 4 each | group_vars | rhel_major; RHEL 10 OpenSSH build; content views derive from rhel_major |
+| appservers | function | server4, server8 | group_vars | firewalld ports 8080/tcp, 8443/tcp |
+| db_servers | function | server1, server5 | group_vars | sysctl tuning, THP off, mount options |
+| webservers | function | server3, server7 | group_vars | firewalld ports 80/tcp, 443/tcp |
+| dev | lifecycle | server8 | group_vars | Sat. Dev Content View + Activation Key |
+| test | lifecycle | server4 | group_vars | Sat. Test Content View + Activation Key |
+| prod | lifecycle | server1,2,3,5,6,7 | group_vars | Sat. Prod Content View + Activation Key |
+| dmz | network | server2, server3, server7 | group_vars | proxy config (env + dnf + rhsm) |
+| pci_scope | compliance | server6, server7 | group_vars + extra role | PCI log forwarding (rsyslog + retention) |
+| openssh pin | host | server1 | host_vars | pinned OpenSSH 8.7p1-47.el9_7 |
+| additional users | host | server2 | host_vars | additional_user in ops group |
+| SAP prerequisites | host | server6 | host_vars + extra role | SAP packages, kernel tuning, tmpfiles |
+
+
 ## Directory layout
 
 ```
@@ -70,23 +89,6 @@ roles/
 ```
 
 
-## Exception use cases
-
-| UseCase | Type | Hosts | Implementation | Content |
-|---|---|---|---|---|
-| base server config | baseline | all | common role + all.yml | baseline for all RHEL servers, incl. OpenSSH 8.7p1-52 + sshd settings (promoted from sshd-ng test) |
-| rhel9 / rhel10 | platform | 4 each | group_vars | rhel_major; RHEL 10 OpenSSH build; content views derive from rhel_major |
-| appservers | function | server4, server8 | group_vars | firewalld ports 8080/tcp, 8443/tcp |
-| db_servers | function | server1, server5 | group_vars | sysctl tuning, THP off, mount options |
-| webservers | function | server3, server7 | group_vars | firewalld ports 80/tcp, 443/tcp |
-| dev | lifecycle | server8 | group_vars | Sat. Dev Content View + Activation Key |
-| test | lifecycle | server4 | group_vars | Sat. Test Content View + Activation Key |
-| prod | lifecycle | server1,2,3,5,6,7 | group_vars | Sat. Prod Content View + Activation Key |
-| dmz | network | server2, server3, server7 | group_vars | proxy config (env + dnf + rhsm) |
-| pci_scope | compliance | server6, server7 | group_vars + extra role | PCI log forwarding (rsyslog + retention) |
-| openssh pin | host | server1 | host_vars | pinned OpenSSH 8.7p1-47.el9_7 |
-| additional users | host | server2 | host_vars | additional_user in ops group |
-| SAP prerequisites | host | server6 | host_vars + extra role | SAP packages, kernel tuning, tmpfiles |
 
 ## How it works
 
