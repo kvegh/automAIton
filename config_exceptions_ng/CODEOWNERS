@@ -37,4 +37,4 @@
 # the platform team. The line is added in the merge request that creates the
 # test group and removed in the one that promotes it (README: "Testing a new
 # component version").
-/inventory/group_vars/sshd_upgrade_test.yml    @sshd-team
+/inventory/group_vars/sshd_hardening_test.yml  @sshd-team

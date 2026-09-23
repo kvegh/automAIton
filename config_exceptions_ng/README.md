@@ -34,6 +34,9 @@ test                (server4)
 prod                (server1, server2, server3, server5, server6, server7)
 dmz                 (server2, server3, server7)
 pci_scope           (server6, server7)
+
+sshd_upgrade_test   ()                          # promoted, now empty
+sshd_hardening_test (server8, server4, server3)  # in progress
 ```
 
 ## Exception use cases
@@ -51,6 +54,8 @@ pci_scope           (server6, server7)
 | dmz | network | server2, server3, server7 | group_vars | proxy config (env + dnf + rhsm) |
 | pci_scope | compliance | server6, server7 | group_vars + extra role | PCI log forwarding (rsyslog + retention) |
 | openssh pin | host | server1 | host_vars | pinned OpenSSH 8.7p1-47.el9_7 |
+| sshd upgrade test | component test | — | group_vars (temporary) | done: promoted to all.yml, group left empty |
+| sshd hardening test | component test | server8, server4, server3 | group_vars (temporary) | in progress: PasswordAuthentication no |
 | additional users | host | server2 | host_vars | additional_user in ops group |
 | SAP prerequisites | host | server6 | host_vars + extra role | SAP packages, kernel tuning, tmpfiles |
 
@@ -75,6 +80,7 @@ inventory/
 │   ├── prod.yml                # Satellite Prod content view
 │   ├── rhel9.yml               # platform: rhel_major 9
 │   ├── rhel10.yml              # platform: rhel_major 10, OpenSSH 9.9 build
+│   ├── sshd_hardening_test.yml # component test in progress
 │   ├── test.yml                # Satellite Test content view
 │   └── webservers.yml          # firewalld ports 80, 443
 ├── host_vars/
@@ -193,6 +199,9 @@ The inventory is back to where it started, and the new version is the
 baseline for all hosts. Host-level exceptions (like the pin on server1)
 are unaffected — `host_vars` still wins.
 
+On `main` right now: `sshd_upgrade_test` went through both steps and is
+empty; `sshd_hardening_test` is in the test step.
+
 ## Who may change what
 
 One branch does not mean everyone may change everything. Three separate
@@ -213,7 +222,7 @@ touches — that is what `CODEOWNERS` defines:
   and `hosts.yml`. Adding a host to a test group is a `hosts.yml` change,
   so which hosts a test can reach is always reviewed by the platform team.
 - **Component team** owns only its own test group file,
-  `group_vars/sshd_upgrade_test.yml`. Inside that file they are free; outside
+  `group_vars/sshd_hardening_test.yml`. Inside that file they are free; outside
   it they need the platform team's approval.
 
 The settings that make this enforced, and the matching rules, are in the
