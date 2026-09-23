@@ -12,6 +12,27 @@ trail in git history. No undocumented changes, no configuration drift.
 All hosts run the same code. Anything host- or group-specific is expressed
 as inventory data — never as host-specific playbooks or conditionals in code.
 
+## Inventory groups
+
+The inventory uses cascaded groups. Function groups are children of `rhel9`,
+so each host is defined exactly once. Lifecycle, network, and compliance
+groups cut across functions and stay flat.
+
+```
+rhel9
+├── db_servers      (server1, server5)
+├── webservers      (server3, server7)
+├── appservers      (server4, server8)
+├── bastion_hosts   (server2)
+└── sap             (server6)
+
+dev                 (server8)
+test                (server4)
+prod                (server1, server2, server3, server5, server6, server7)
+dmz                 (server2, server3, server7)
+pci_scope           (server6, server7)
+```
+
 ## Directory layout
 
 ```
@@ -43,26 +64,6 @@ roles/
 └── sap_preconfigure/           # SAP packages + kernel tuning
 ```
 
-## Inventory groups
-
-The inventory uses cascaded groups. Function groups are children of `rhel9`,
-so each host is defined exactly once. Lifecycle, network, and compliance
-groups cut across functions and stay flat.
-
-```
-rhel9
-├── db_servers      (server1, server5)
-├── webservers      (server3, server7)
-├── appservers      (server4, server8)
-├── bastion_hosts   (server2)
-└── sap             (server6)
-
-dev                 (server8)
-test                (server4)
-prod                (server1, server2, server3, server5, server6, server7)
-dmz                 (server2, server3, server7)
-pci_scope           (server6, server7)
-```
 
 ## Exception use cases
 
