@@ -20,19 +20,19 @@ scope. Adding a platform (say, `rhel10`) is one more label with its own
 `group_vars` file; a host migrates by moving from one label to the other.
 
 ```
-rhel9               (server1, server2, server3, server4)
-rhel10              (server5, server6, server7, server8)
+rhel9               (server1, server2, server3, server4, server9)
+rhel10              (server5, server6, server7, server8, server10)
 
 db_servers          (server1, server5)
 webservers          (server3, server7)
-appservers          (server4, server8)
+appservers          (server4, server8, server9, server10)
 bastion_hosts       (server2)
 sap                 (server6)
 
 dev                 (server8)
 test                (server4)
-prod                (server1, server2, server3, server5, server6, server7)
-dmz                 (server2, server3, server7)
+prod                (server1, server2, server3, server5, server6, server7, server9, server10)
+dmz                 (server2, server3, server7, server9)
 pci_scope           (server6, server7)
 
 sshd_upgrade_test   ()                          # promoted, now empty
@@ -44,14 +44,14 @@ sshd_hardening_test (server8, server4, server3)  # in progress
 | UseCase | Type | Hosts | Implementation | Content |
 |---|---|---|---|---|
 | base server config | baseline | all | common role + all.yml | baseline for all RHEL servers, incl. OpenSSH 8.7p1-52 + sshd settings (promoted from sshd upgrade test) |
-| rhel9 / rhel10 | platform | 4 each | group_vars | rhel_major; RHEL 10 OpenSSH build; content views derive from rhel_major |
-| appservers | function | server4, server8 | group_vars | firewalld ports 8080/tcp, 8443/tcp |
+| rhel9 / rhel10 | platform | 5 each | group_vars | rhel_major; RHEL 10 OpenSSH build; content views derive from rhel_major |
+| appservers | function | server4, server8, server9, server10 | group_vars | firewalld ports 8080/tcp, 8443/tcp |
 | db_servers | function | server1, server5 | group_vars | sysctl tuning, THP off, mount options |
 | webservers | function | server3, server7 | group_vars | firewalld ports 80/tcp, 443/tcp |
 | dev | lifecycle | server8 | group_vars | Sat. Dev Content View + Activation Key |
 | test | lifecycle | server4 | group_vars | Sat. Test Content View + Activation Key |
-| prod | lifecycle | server1,2,3,5,6,7 | group_vars | Sat. Prod Content View + Activation Key |
-| dmz | network | server2, server3, server7 | group_vars | proxy config (env + dnf + rhsm) |
+| prod | lifecycle | server1,2,3,5,6,7,9,10 | group_vars | Sat. Prod Content View + Activation Key |
+| dmz | network | server2, server3, server7, server9 | group_vars | proxy config (env + dnf + rhsm) |
 | pci_scope | compliance | server6, server7 | group_vars + extra role | PCI log forwarding (rsyslog + retention) |
 | openssh pin | host | server1 | host_vars | pinned OpenSSH 8.7p1-47.el9_7 |
 | sshd upgrade test | component test | — | group_vars (temporary) | done: promoted to all.yml, group left empty |
