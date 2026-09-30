@@ -38,16 +38,16 @@
       loop: "{{ vm_ids }}"
 
     - name: Import and start VMs
-      community.libvirt.virt_install:
-        name: "{{ projectname }}-vm-{{ item }}"
-        vcpus: 2
-        memory: 4096
-        import_install: true
-        graphics: none
-        osinfo: rhel9.8
-        disks:
-          - path: "{{ vm_dir }}/{{ projectname }}-vm-{{ item }}.disk.qcow2"
-            format: qcow2
-        networks:
-          - network: internal
+      ansible.builtin.command:
+        cmd: >-
+          virt-install
+          --name {{ projectname }}-vm-{{ item }}
+          --vcpus {{ vcpus | default(2) }}
+          --memory {{ memory | default(4096) }}
+          --import
+          --graphics none
+          --osinfo detect=on,require=off
+          --disk path={{ vm_dir }}/{{ projectname }}-vm-{{ item }}.disk.qcow2,format=qcow2
+          --network network=internal
+          --noautoconsole
       loop: "{{ vm_ids }}"
