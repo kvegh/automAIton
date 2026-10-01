@@ -5,6 +5,7 @@
   vars:
     base_image: /opt/images/rhel-9.8-x86_64-kvm.qcow2
     vm_dir: /opt/vms
+    vm_suffix: "{{ suffix | default('vm') }}"
     vm_ids: "{{ range(1, sequence | int + 1) | list }}"
 
   tasks:
@@ -17,15 +18,21 @@
     - name: Copy base image for each VM
       ansible.builtin.copy:
         src: "{{ base_image }}"
-        dest: "{{ vm_dir }}/{{ projectname }}-vm-{{ item }}.disk.qcow2"
+        dest: "{{ vm_dir }}/{{ projectname }}-{{ vm_suffix }}-{{ item }}.disk.qcow2"
         remote_src: true
       loop: "{{ vm_ids }}"
+
+    - name: Resize VM disks
+      ansible.builtin.command:
+        cmd: "qemu-img resize {{ vm_dir }}/{{ projectname }}-{{ vm_suffix }}-{{ item }}.disk.qcow2 {{ disk_size }}"
+      loop: "{{ vm_ids }}"
+      when: disk_size is defined
 
     - name: Customize VM images
       ansible.builtin.command:
         cmd: >-
-          virt-customize -a {{ vm_dir }}/{{ projectname }}-vm-{{ item }}.disk.qcow2
-          --hostname {{ projectname }}-vm-{{ item }}.internal
+          virt-customize -a {{ vm_dir }}/{{ projectname }}-{{ vm_suffix }}-{{ item }}.disk.qcow2
+          --hostname {{ projectname }}-{{ vm_suffix }}-{{ item }}.internal
           --root-password password:blah
           --ssh-inject root:file:/home/kvegh/.ssh/id_ed25519.pub
           --run-command 'useradd ansible'
@@ -41,13 +48,13 @@
       ansible.builtin.command:
         cmd: >-
           virt-install
-          --name {{ projectname }}-vm-{{ item }}
+          --name {{ projectname }}-{{ vm_suffix }}-{{ item }}
           --vcpus {{ vcpus | default(2) }}
           --memory {{ memory | default(4096) }}
           --import
           --graphics none
           --osinfo detect=on,require=off
-          --disk path={{ vm_dir }}/{{ projectname }}-vm-{{ item }}.disk.qcow2,format=qcow2
+          --disk path={{ vm_dir }}/{{ projectname }}-{{ vm_suffix }}-{{ item }}.disk.qcow2,format=qcow2
           --network network=internal
           --noautoconsole
       loop: "{{ vm_ids }}"
